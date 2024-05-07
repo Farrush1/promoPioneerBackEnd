@@ -1,9 +1,18 @@
-const { PrismaClient } = require("@prisma/client");
+const express = require("express");
+const morgan = require("morgan");
+const dotenv = require("dotenv");
+const router = require("./router/index");
+const errorHandler = require("./middleware/errorHandler");
+dotenv.config();
 
-const prisma = new PrismaClient();
+const app = express();
 
-async function main(){
-	console.log("prepare migration")
-}
+app.use(morgan("tiny"));
 
-main()
+app.use(express.json());
+app.use(router);
+app.use(errorHandler);
+
+app.listen(process.env.BACKEND_PORT, () => {
+  console.log("app running in port 5000");
+});
