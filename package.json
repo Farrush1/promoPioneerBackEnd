@@ -1,0 +1,17 @@
+{
+  "name": "promopioneerbackend",
+  "version": "1.0.0",
+  "description": "tes be",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.13.0",
+    "prisma": "^5.13.0"
+  }
+}
