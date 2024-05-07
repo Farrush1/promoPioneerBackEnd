@@ -1,0 +1,167 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String
+  product     Product[]
+}
+
+model City {
+  id           Int         @id @default(autoincrement())
+  name         String
+  rajaongkirId Int
+  wareHouses   WareHouse[]
+  user         User[]
+}
+
+model Promo {
+  id               Int       @id @default(autoincrement())
+  name             String    @unique
+  discount_percent Int
+  quantity         Int
+  isLimited        Boolean
+  start_date       DateTime
+  end_date         DateTime
+  promo_type_id    Int
+  PromoType        PromoType @relation(fields: [promo_type_id], references: [id])
+  product          Product[]
+}
+
+model ShippingService {
+  id       Int        @id @default(autoincrement())
+  name     String
+  service  String
+  checkout Checkout[]
+}
+
+model WareHouse {
+  id       Int      @id @default(autoincrement())
+  name     String
+  location Int
+  city     City     @relation(fields: [city_id], references: [id])
+  city_id  Int
+  product  Product?
+}
+
+model User {
+  id                     Int            @id @default(autoincrement())
+  name                   String
+  email                  String         @unique
+  password               String
+  role                   Role           @default(USER)
+  UserCity               City           @relation(fields: [city_id], references: [id])
+  city_id                Int
+  full_address           String
+  age                    Int
+  gender                 Gender
+  avatar                 String
+  is_register_using_code Boolean
+  is_first_transaction   Boolean
+  Cart                   Cart?
+  affiliate_code         AffiliateCode?
+  checkout               Checkout[]
+}
+
+model Cart {
+  id       Int        @id @default(autoincrement())
+  user_id  Int        @unique
+  User     User       @relation(fields: [user_id], references: [id])
+  cartItem CartItem[]
+}
+
+model PromoType {
+  id         Int     @id @default(autoincrement())
+  promo_id   Int
+  promo      Promo[]
+  promo_type String
+}
+
+model AffiliateCode {
+  id             Int    @id @default(autoincrement())
+  user_id        Int    @unique
+  affiliate_code String @unique
+  user           User   @relation(fields: [user_id], references: [id])
+}
+
+model Product {
+  id            Int            @id @default(autoincrement())
+  promo_id      Int
+  category_id   Int
+  warehouse_id  Int            @unique
+  name          String
+  price         Int
+  description   String
+  product_image String
+  stock         Int
+  weight        Int
+  promo         Promo          @relation(fields: [promo_id], references: [id])
+  category      Category       @relation(fields: [category_id], references: [id])
+  warehouse     WareHouse      @relation(fields: [warehouse_id], references: [id])
+  cart_item     CartItem[]
+  checkout_item CheckoutItem[]
+}
+
+model Checkout {
+  id                   Int             @id @default(autoincrement())
+  user_id              Int
+  total_price          Int
+  subtotal_price       Int
+  shipping_id          Int
+  total_shipping_price Int
+  status               String
+  user                 User            @relation(fields: [user_id], references: [id])
+  shipping             ShippingService @relation(fields: [shipping_id], references: [id])
+  checkout_item        CheckoutItem[]
+  payment              Payment?
+}
+
+model CartItem {
+  id         Int     @id @default(autoincrement())
+  cart_id    Int
+  product_id Int
+  quantity   Int
+  product    Product @relation(fields: [product_id], references: [id])
+  cart       Cart    @relation(fields: [cart_id], references: [id])
+}
+
+model CheckoutItem {
+  id             Int      @id @default(autoincrement())
+  checkout_id    Int
+  product_id     Int
+  quantity       Int
+  shipping_price Int
+  product        Product  @relation(fields: [product_id], references: [id])
+  checkout       Checkout @relation(fields: [checkout_id], references: [id])
+}
+
+model Payment {
+  id             Int      @id @default(autoincrement())
+  checkout_id    Int      @unique
+  payment_proof  Int
+  payment_status String
+  checkout       Checkout @relation(fields: [checkout_id], references: [id])
+}
