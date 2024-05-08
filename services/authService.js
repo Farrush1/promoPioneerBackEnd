@@ -73,11 +73,11 @@ class AuthService {
         error.name = 'InvalidCredential'
         throw error
       }
-      const token = sign({id: user.id, role: user.role})
+      const token = sign({ id: user.id, role: user.role })
       res.cookie('accessToken', token, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
-        secure: true,
+        secure: true
       })
       return { message: 'success login', accessToken: token }
     } catch (error) {
