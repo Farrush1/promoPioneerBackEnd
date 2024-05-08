@@ -24,18 +24,21 @@ enum Gender {
 }
 
 model Category {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  description String
-  product     Product[]
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  product Product[]
 }
 
 model City {
-  id           Int         @id @default(autoincrement())
-  name         String
-  rajaongkirId Int
-  wareHouses   WareHouse[]
-  user         User[]
+  id                     Int         @id @default(autoincrement())
+  name                   String
+  rajaongkir_city_id     Int
+  rajaongkir_province_id Int
+  province_name          String
+  type                   String
+  postal_code            Int
+  wareHouses             WareHouse[]
+  user                   User[]
 }
 
 model Promo {
