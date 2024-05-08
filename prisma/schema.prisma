@@ -76,12 +76,12 @@ model User {
   email                  String         @unique
   password               String
   role                   Role           @default(USER)
-  UserCity               City           @relation(fields: [city_id], references: [id])
-  city_id                Int
-  full_address           String
-  age                    Int
-  gender                 Gender
-  avatar                 String
+  UserCity               City?           @relation(fields: [city_id], references: [id])
+  city_id                Int?
+  full_address           String?
+  age                    Int?
+  gender                 Gender?
+  avatar                 String?
   is_register_using_code Boolean
   is_first_transaction   Boolean
   Cart                   Cart?
