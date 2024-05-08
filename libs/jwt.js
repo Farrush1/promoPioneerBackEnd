@@ -4,7 +4,7 @@ dotenv.config()
 
 const sign = (dataObj) => {
   const token = jwt.sign(dataObj, process.env.JWT_AUTH_SECRET, {
-    expiresIn: '1d',
+    expiresIn: '1d'
   })
   return token
 }
