@@ -1,9 +1,12 @@
 const cloudinary = require('cloudinary').v2
 
+const dotenv = require('dotenv')
+dotenv.config()
 cloudinary.config({
-  cloud_name: 'dmvigke9d',
-  api_key: '438744581893554',
-  api_secret: 'gSCy_sjfJ-Fxr8Qn4SRclTiH050'
+  cloud_name: process.env.CLOUDINARY_CLOUD_NANE,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+
 })
 
 function cloudinaryUpload (filePath) {
