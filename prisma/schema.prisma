@@ -64,7 +64,7 @@ model ShippingService {
 model WareHouse {
   id       Int      @id @default(autoincrement())
   name     String
-  location Int
+  location String
   city     City     @relation(fields: [city_id], references: [id])
   city_id  Int
   product  Product?
@@ -76,7 +76,7 @@ model User {
   email                  String         @unique
   password               String
   role                   Role           @default(USER)
-  UserCity               City?           @relation(fields: [city_id], references: [id])
+  UserCity               City?          @relation(fields: [city_id], references: [id])
   city_id                Int?
   full_address           String?
   age                    Int?
@@ -112,7 +112,7 @@ model AffiliateCode {
 
 model Product {
   id            Int            @id @default(autoincrement())
-  promo_id      Int
+  promo_id      Int?
   category_id   Int
   warehouse_id  Int            @unique
   name          String
@@ -121,7 +121,7 @@ model Product {
   product_image String
   stock         Int
   weight        Int
-  promo         Promo          @relation(fields: [promo_id], references: [id])
+  promo         Promo?         @relation(fields: [promo_id], references: [id])
   category      Category       @relation(fields: [category_id], references: [id])
   warehouse     WareHouse      @relation(fields: [warehouse_id], references: [id])
   cart_item     CartItem[]
