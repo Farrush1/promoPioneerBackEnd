@@ -4,5 +4,7 @@
   "tabWidth": 2,
   "useTabs": false,
   "semi": false,
-  "singleQuote": true
+  "singleQuote": true,
+  "arrowParens": "always",
+  "space-before-function-paren": ["warning", "always"]
 }

@@ -129,15 +129,15 @@ model Product {
 }
 
 model Checkout {
-  id                   Int             @id @default(autoincrement())
+  id                   Int              @id @default(autoincrement())
   user_id              Int
-  total_price          Int
+  total_price          Int?
   subtotal_price       Int
-  shipping_id          Int
-  total_shipping_price Int
+  shipping_id          Int?
+  total_shipping_price Int?
   status               String
-  user                 User            @relation(fields: [user_id], references: [id])
-  shipping             ShippingService @relation(fields: [shipping_id], references: [id])
+  user                 User             @relation(fields: [user_id], references: [id])
+  shipping             ShippingService? @relation(fields: [shipping_id], references: [id])
   checkout_item        CheckoutItem[]
   payment              Payment?
 }
@@ -152,13 +152,15 @@ model CartItem {
 }
 
 model CheckoutItem {
-  id             Int      @id @default(autoincrement())
-  checkout_id    Int
-  product_id     Int
-  quantity       Int
-  shipping_price Int
-  product        Product  @relation(fields: [product_id], references: [id])
-  checkout       Checkout @relation(fields: [checkout_id], references: [id])
+  id              Int              @id @default(autoincrement())
+  checkout_id     Int
+  product_id      Int
+  quantity        Int
+  total_weight    Int
+  // shipping_price Int
+  product         Product          @relation(fields: [product_id], references: [id])
+  checkout        Checkout         @relation(fields: [checkout_id], references: [id])
+  shipping_option ShippingOption[]
 }
 
 model Payment {
@@ -167,4 +169,22 @@ model Payment {
   payment_proof  Int
   payment_status String
   checkout       Checkout @relation(fields: [checkout_id], references: [id])
+}
+
+model ShippingOption {
+  id               Int          @id @default(autoincrement())
+  code             String
+  name             String
+  checkout_item_id Int
+  checkout_item    CheckoutItem @relation(fields: [checkout_item_id], references: [id])
+  option_cost      OptionCost[]
+}
+
+model OptionCost {
+  id                 Int            @id @default(autoincrement())
+  service            String
+  description        String
+  cost               Int
+  shipping_option_Id Int
+  shipping_option    ShippingOption @relation(fields: [shipping_option_Id], references: [id])
 }
