@@ -1,10 +1,11 @@
 const CheckoutService = require('../services/checkoutService')
+const shippingCost = require('../utils/shippingCost')
 
 class CheckoutController {
   static async getAll (req, res, next) {
     try {
       const checkouts = await CheckoutService.getAll()
-      return checkouts
+      res.status(200).json(checkouts)
     } catch (error) {
       next(error)
     }
@@ -14,11 +15,11 @@ class CheckoutController {
     try {
       const params = {
         cookie: req.cookies,
-        body: req.body,
+        body: req.body
       }
-      console.log(params.cookie, "--------")
+      console.log(params.cookie, '--------')
       const checkouts = await CheckoutService.store(params)
-      res.status(200).json(checkouts) 
+      res.status(200).json(checkouts)
     } catch (error) {
       next(error)
     }
@@ -26,7 +27,8 @@ class CheckoutController {
 
   static async cost (req, res, next) {
     try {
-      const checkouts = await CheckoutService.cost(req.body)
+      const { origin, destination, weight, courier } = req.body
+      const checkouts = await shippingCost(origin, destination, weight, courier)
       res.status(200).json(checkouts)
     } catch (error) {
       next(error)
