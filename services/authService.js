@@ -1,7 +1,7 @@
-const generateAffiliateCode = require('../libs/affiliateCode')
 const { hashPassword, comparePassword } = require('../libs/bcrypt')
 const sign = require('../libs/jwt')
 const prisma = require('../libs/prisma')
+const generateAffiliateCode = require('../utils/affiliateCode')
 
 class AuthService {
   static async register (params) {
