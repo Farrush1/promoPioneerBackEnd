@@ -20,6 +20,8 @@
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.2.0",
     "cookie-parser": "^1.4.6",
+
+
     "dotenv": "^16.4.5",
     "eslint-plugin-n": "^17.5.1",
     "express": "^4.19.2",
