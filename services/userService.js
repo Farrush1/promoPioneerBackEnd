@@ -4,7 +4,11 @@ const getDataUserCookie = require('../utils/cookie')
 class UserService {
   static async getAll () {
     try {
-      const users = await prisma.user.findMany()
+      const users = await prisma.user.findMany({
+        include: {
+          Cart: true
+        }
+      })
       return { users }
     } catch (error) {
       console.log(error)

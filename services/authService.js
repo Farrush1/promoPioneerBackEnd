@@ -39,6 +39,12 @@ class AuthService {
         },
         include: {
           affiliate_code: true
+
+        }
+      })
+      await prisma.cart.create({
+        data: {
+          user_id: user.id
         }
       })
       return { user }
