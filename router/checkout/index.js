@@ -3,7 +3,7 @@ const CheckoutController = require('../../controllers/checkoutController')
 const router = express.Router()
 
 router.get('/', CheckoutController.getAll)
-router.post('/', CheckoutController.store)
+router.post('/products/:id', CheckoutController.storeProduct)
 // ignore this route
 router.post('/cost', CheckoutController.cost)
 

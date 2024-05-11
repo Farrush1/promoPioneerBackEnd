@@ -21,55 +21,15 @@ class CheckoutService {
     }
   }
 
-  static async store (params) {
+  static async storeProduct (params) {
     try {
-      const { body, cookie } = params
+      const { body, cookie, productid } = params
       const { items } = body
       const { id } = getDataUserCookie(cookie)
-      let subtotalPrice = 0
-
-      for (const item of items) {
-        const product = await prisma.product.findUnique({
-          where: {
-            id: item.product_id
-          },
-          include: {
-            warehouse: {
-              include: {
-                city: true
-              }
-            }
-          }
-        })
-
-        if (!product) {
-          throw new Error(`Product with ID ${item.product_id} not found`)
-        }
-
-        item.total_weight = product.weight * item.quantity // Hitung total berat untuk produk
-        subtotalPrice += item.quantity * product.price
-      }
-
-      const checkout = await prisma.checkout.create({
-        data: {
-          user_id: +id,
-          subtotal_price: subtotalPrice,
-          status: 'incompleted',
-          checkout_item: {
-            createMany: {
-              data: items
-            }
-          }
-        },
-        include: {
-          checkout_item: {
-            include: {
-              shipping_option: true
-            }
-          }
-        }
+      const user = await prisma.user.findUnique({
+        where: { id }
       })
-      return { checkout }
+      return { user }
     } catch (error) {
       console.log(error)
       throw error
