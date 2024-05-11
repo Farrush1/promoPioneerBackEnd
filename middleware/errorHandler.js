@@ -1,3 +1,4 @@
+const {verify} = require("jsonwebtoken");
 const errorHandler = (err, req, res, next) => {
   if (err.name === 'BadRequest') {
     return res.status(400).json({ message: 'Bad Request, check your request body!' })

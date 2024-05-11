@@ -12,7 +12,7 @@ router.get('/api/hello', function (req, res) {
   res.status(200).json({ message: 'hello world' })
 })
 router.use('/api/category', categoryRoute)
-router.use('/api/auth', authRoute)
+router.use('/api/auth', authRoute) // /user
 router.use('/api/product', productRoute)
 router.use('/api/checkout', checkoutRoute)
 router.use('/api/users', userRoute)
