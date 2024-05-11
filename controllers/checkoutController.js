@@ -11,14 +11,14 @@ class CheckoutController {
     }
   }
 
-  static async store (req, res, next) {
+  static async storeProduct (req, res, next) {
     try {
       const params = {
         cookie: req.cookies,
-        body: req.body
+        body: req.body,
+        productId: req.params.id
       }
-      console.log(params.cookie, '--------')
-      const checkouts = await CheckoutService.store(params)
+      const checkouts = await CheckoutService.storeProduct(params)
       res.status(200).json(checkouts)
     } catch (error) {
       next(error)

@@ -41,7 +41,7 @@ class CategoryService {
 
   static findUnique = async (id) => {
     try {
-      const findId = await prisma.category.findUnique({ where: { id: id } })
+      const findId = await prisma.category.findUnique({ where: { id } })
       return findId
     } catch (error) {
       console.log('Error: ', error)
@@ -51,7 +51,7 @@ class CategoryService {
 
   static delete = async (id) => {
     try {
-      const deleteById = await prisma.category.delete({ where: { id: id } })
+      const deleteById = await prisma.category.delete({ where: { id } })
       return deleteById
     } catch (error) {
       console.log('Error: ', error)

@@ -26,10 +26,18 @@ class AuthService {
           is_first_transaction: false,
           affiliate_code: withCode ? { create: { affiliate_code: userAffiliate } } : undefined,
         },
-        include: { affiliate_code: true },
-      });
 
-      return { user };
+        include: {
+          affiliate_code: true
+
+        }
+      })
+      await prisma.cart.create({
+        data: {
+          user_id: user.id
+        }
+      })
+      return { user }
     } catch (error) {
       console.log(error);
       throw error;

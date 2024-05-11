@@ -5,11 +5,11 @@ const shippingCost = require('../utils/shippingCost')
 class CheckoutService {
   static async getAll () {
     try {
-      const checkout = await prisma.checkout.findMany({
+      const checkout = await prisma.checkoutCollection.findMany({
         include: {
-          checkout_item: {
+          checkout: {
             include: {
-              product: true
+              checkout_item: true
             }
           }
         }
@@ -21,55 +21,44 @@ class CheckoutService {
     }
   }
 
-  static async store (params) {
+  static async storeProduct (params) {
     try {
-      const { body, cookie } = params
-      const { items } = body
+      const { body, cookie, productId } = params
+      const { quantity } = body
       const { id } = getDataUserCookie(cookie)
-      let subtotalPrice = 0
-
-      for (const item of items) {
-        const product = await prisma.product.findUnique({
-          where: {
-            id: item.product_id
-          },
-          include: {
-            warehouse: {
-              include: {
-                city: true
+      const user = await prisma.user.findUnique({
+        where: { id }
+      })
+      const product = await prisma.product.findUnique({
+        where: { id: +productId },
+        include:{
+          warehouse:true
+        }
+      })
+      const totalPrice = product.price * quantity
+      const totalWeight = product.weight * quantity
+      const checkoutColection = await prisma.checkoutCollection.create({
+        data: {
+          user_id: id,
+          total_item_price: totalPrice,
+          checkout: {
+            create:{
+              subtotal_price: totalPrice,
+              total_weight: totalWeight,
+              city_id: product.warehouse.city_id,
+              status: 'incompleted',
+              checkout_item:{
+                create:{
+                  product_id: +productId,
+                  quantity,
+                  total_specific_price: totalPrice
+                }
               }
             }
           }
-        })
-
-        if (!product) {
-          throw new Error(`Product with ID ${item.product_id} not found`)
-        }
-
-        item.total_weight = product.weight * item.quantity // Hitung total berat untuk produk
-        subtotalPrice += item.quantity * product.price
-      }
-
-      const checkout = await prisma.checkout.create({
-        data: {
-          user_id: +id,
-          subtotal_price: subtotalPrice,
-          status: 'incompleted',
-          checkout_item: {
-            createMany: {
-              data: items
-            }
-          }
-        },
-        include: {
-          checkout_item: {
-            include: {
-              shipping_option: true
-            }
-          }
-        }
+        } 
       })
-      return { checkout }
+      return { checkoutColection }
     } catch (error) {
       console.log(error)
       throw error
