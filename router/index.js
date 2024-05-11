@@ -16,6 +16,7 @@ router.use('/api/categories', categoryRoute)
 router.use('/api/auth', authRoute)
 router.use('/api/products', productRoute)
 router.use('/api/checkouts', checkoutRoute)
+
 router.use('/api/users', userRoute)
 router.use('/api/carts', cartRoute)
 

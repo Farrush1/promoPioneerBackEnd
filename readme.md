@@ -15,3 +15,4 @@ Langkah Setup :
 - Pastikan RAJAONGKIR_API_KEY terisi 
 - Jalankan `npx prisma db seed` untuk mengisi table City sesuai data dari Rajaongkir API
 - Jalankan `yarn start`
+
