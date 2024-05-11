@@ -6,7 +6,8 @@ class UserService {
     try {
       const users = await prisma.user.findMany({
         include: {
-          Cart: true
+          Cart: true,
+          affiliate_code: true
         }
       })
       return { users }

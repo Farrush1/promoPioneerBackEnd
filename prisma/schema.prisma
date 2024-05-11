@@ -163,6 +163,7 @@ model CheckoutItem {
   checkout_id Int
   product_id  Int
   quantity    Int
+  total_specific_price Int
   product     Product  @relation(fields: [product_id], references: [id])
   checkout    Checkout @relation(fields: [checkout_id], references: [id])
 }

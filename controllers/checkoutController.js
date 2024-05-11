@@ -16,7 +16,7 @@ class CheckoutController {
       const params = {
         cookie: req.cookies,
         body: req.body,
-        productId: req.params
+        productId: req.params.id
       }
       const checkouts = await CheckoutService.storeProduct(params)
       res.status(200).json(checkouts)

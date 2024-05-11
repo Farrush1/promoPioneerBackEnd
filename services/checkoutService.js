@@ -5,11 +5,11 @@ const shippingCost = require('../utils/shippingCost')
 class CheckoutService {
   static async getAll () {
     try {
-      const checkout = await prisma.checkout.findMany({
+      const checkout = await prisma.checkoutCollection.findMany({
         include: {
-          checkout_item: {
+          checkout: {
             include: {
-              product: true
+              checkout_item: true
             }
           }
         }
@@ -23,13 +23,42 @@ class CheckoutService {
 
   static async storeProduct (params) {
     try {
-      const { body, cookie, productid } = params
-      const { items } = body
+      const { body, cookie, productId } = params
+      const { quantity } = body
       const { id } = getDataUserCookie(cookie)
       const user = await prisma.user.findUnique({
         where: { id }
       })
-      return { user }
+      const product = await prisma.product.findUnique({
+        where: { id: +productId },
+        include:{
+          warehouse:true
+        }
+      })
+      const totalPrice = product.price * quantity
+      const totalWeight = product.weight * quantity
+      const checkoutColection = await prisma.checkoutCollection.create({
+        data: {
+          user_id: id,
+          total_item_price: totalPrice,
+          checkout: {
+            create:{
+              subtotal_price: totalPrice,
+              total_weight: totalWeight,
+              city_id: product.warehouse.city_id,
+              status: 'incompleted',
+              checkout_item:{
+                create:{
+                  product_id: +productId,
+                  quantity,
+                  total_specific_price: totalPrice
+                }
+              }
+            }
+          }
+        } 
+      })
+      return { checkoutColection }
     } catch (error) {
       console.log(error)
       throw error

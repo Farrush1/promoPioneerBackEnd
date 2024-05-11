@@ -26,6 +26,7 @@ class AuthService {
           is_first_transaction: false,
           affiliate_code: withCode ? { create: { affiliate_code: userAffiliate } } : undefined,
         },
+
         include: {
           affiliate_code: true
 
