@@ -39,6 +39,7 @@ model City {
   postal_code            Int
   wareHouses             WareHouse[]
   user                   User[]
+  checkout               Checkout[]
 }
 
 model Promo {
@@ -54,13 +55,6 @@ model Promo {
   product          Product[]
 }
 
-model ShippingService {
-  id       Int        @id @default(autoincrement())
-  name     String
-  service  String
-  checkout Checkout[]
-}
-
 model WareHouse {
   id       Int      @id @default(autoincrement())
   name     String
@@ -71,12 +65,12 @@ model WareHouse {
 }
 
 model User {
-  id                     Int            @id @default(autoincrement())
+  id                     Int                 @id @default(autoincrement())
   name                   String
-  email                  String         @unique
+  email                  String              @unique
   password               String
-  role                   Role           @default(USER)
-  UserCity               City?          @relation(fields: [city_id], references: [id])
+  role                   Role                @default(USER)
+  UserCity               City?               @relation(fields: [city_id], references: [id])
   city_id                Int?
   full_address           String?
   age                    Int?
@@ -86,7 +80,7 @@ model User {
   is_first_transaction   Boolean
   Cart                   Cart?
   affiliate_code         AffiliateCode?
-  checkout               Checkout[]
+  checkout_collection    CheckoutCollection?
 }
 
 model Cart {
@@ -128,20 +122,6 @@ model Product {
   checkout_item CheckoutItem[]
 }
 
-model Checkout {
-  id                   Int              @id @default(autoincrement())
-  user_id              Int
-  total_price          Int?
-  subtotal_price       Int
-  shipping_id          Int?
-  total_shipping_price Int?
-  status               String
-  user                 User             @relation(fields: [user_id], references: [id])
-  shipping             ShippingService? @relation(fields: [shipping_id], references: [id])
-  checkout_item        CheckoutItem[]
-  payment              Payment?
-}
-
 model CartItem {
   id         Int     @id @default(autoincrement())
   cart_id    Int
@@ -151,40 +131,46 @@ model CartItem {
   cart       Cart    @relation(fields: [cart_id], references: [id])
 }
 
+model CheckoutCollection {
+  id                   Int        @id @default(autoincrement())
+  total_item_price     Int
+  total_shipping_price Int?
+  total_price          Int?
+  user_id              Int        @unique
+  user                 User       @relation(fields: [user_id], references: [id])
+  payment              Payment?
+  checkout             Checkout[]
+}
+
+model Checkout {
+  id                     Int                @id @default(autoincrement())
+  checkout_collection_id Int
+  total_checkout_price   Int?
+  subtotal_price         Int
+  shipping_name          String?
+  shipping_service       String?
+  shipping_price         Int?
+  status                 String
+  total_weight           Int
+  city_id                Int
+  city                   City               @relation(fields: [city_id], references: [id])
+  checkout_collection    CheckoutCollection @relation(fields: [checkout_collection_id], references: [id])
+  checkout_item          CheckoutItem[]
+}
+
 model CheckoutItem {
-  id              Int              @id @default(autoincrement())
-  checkout_id     Int
-  product_id      Int
-  quantity        Int
-  total_weight    Int
-  // shipping_price Int
-  product         Product          @relation(fields: [product_id], references: [id])
-  checkout        Checkout         @relation(fields: [checkout_id], references: [id])
-  shipping_option ShippingOption[]
+  id          Int      @id @default(autoincrement())
+  checkout_id Int
+  product_id  Int
+  quantity    Int
+  product     Product  @relation(fields: [product_id], references: [id])
+  checkout    Checkout @relation(fields: [checkout_id], references: [id])
 }
 
 model Payment {
-  id             Int      @id @default(autoincrement())
-  checkout_id    Int      @unique
-  payment_proof  Int
-  payment_status String
-  checkout       Checkout @relation(fields: [checkout_id], references: [id])
-}
-
-model ShippingOption {
-  id               Int          @id @default(autoincrement())
-  code             String
-  name             String
-  checkout_item_id Int
-  checkout_item    CheckoutItem @relation(fields: [checkout_item_id], references: [id])
-  option_cost      OptionCost[]
-}
-
-model OptionCost {
-  id                 Int            @id @default(autoincrement())
-  service            String
-  description        String
-  cost               Int
-  shipping_option_Id Int
-  shipping_option    ShippingOption @relation(fields: [shipping_option_Id], references: [id])
+  id                     Int                @id @default(autoincrement())
+  checkout_collection_id Int                @unique
+  payment_proof          Int
+  payment_status         String
+  checkout_colection     CheckoutCollection @relation(fields: [checkout_collection_id], references: [id])
 }
