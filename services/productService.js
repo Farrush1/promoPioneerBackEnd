@@ -4,7 +4,15 @@ const prisma = require('../libs/prisma')
 class ProductService {
   static async getAll () {
     try {
-      const result = await prisma.product.findMany()
+      const result = await prisma.product.findMany({
+        include: {
+          warehouse: {
+            include: {
+              city: true
+            }
+          }
+        }
+      })
       return { result }
     } catch (error) {
       console.log(error)

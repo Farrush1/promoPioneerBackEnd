@@ -7,7 +7,7 @@ Member:
 5. Fahdi Alan Fawwazi
 
 Langkah Setup :
-- Install package `npm i` atau `yarn add`
+- Install package `npm i` atau `yarn`
 - Create database di komputer lokal 
 - Setup .env merujuk dari .env.example dan sesuaikan
 - Pastikan prisma terinstal
