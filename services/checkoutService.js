@@ -1,4 +1,5 @@
 const prisma = require('../libs/prisma')
+const { connect } = require('../router')
 const getDataUserCookie = require('../utils/cookie')
 const shippingCost = require('../utils/shippingCost')
 
@@ -42,6 +43,7 @@ class CheckoutService {
           id: +checkoutColectionId,
         },
         include: {
+          CheckoutDiscount: true,
           checkout: {
             include: {
               checkout_item: true,
@@ -49,15 +51,30 @@ class CheckoutService {
           },
         },
       })
-      const checkouts = checkoutColection.checkout
-      for (const checkout of checkouts) {
+      // const checkouts = checkoutColection.checkout
+      for (const checkout of checkoutColection.checkout) {
         console.log(checkout)
-        const shippingJNE = await shippingCost(checkout.city_id, userCity, checkout.total_weight, 'jne')
-        const shippingTIKI = await shippingCost(checkout.city_id, userCity, checkout.total_weight, 'tiki')
-        const shippingPOS = await shippingCost(checkout.city_id, userCity, checkout.total_weight, 'pos')
+        const shippingJNE = await shippingCost(
+          checkout.city_id,
+          userCity,
+          checkout.total_weight,
+          'jne',
+        )
+        const shippingTIKI = await shippingCost(
+          checkout.city_id,
+          userCity,
+          checkout.total_weight,
+          'tiki',
+        )
+        const shippingPOS = await shippingCost(
+          checkout.city_id,
+          userCity,
+          checkout.total_weight,
+          'pos',
+        )
         checkout.shipping_option = [shippingJNE[0], shippingTIKI[0], shippingPOS[0]]
       }
-      return { checkouts }
+      return { checkoutColection }
     } catch (error) {
       console.log(error)
       throw error
@@ -108,6 +125,73 @@ class CheckoutService {
       })
       return { checkoutColection }
     } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
+  static async promoCheckout(params) {
+    try {
+      const { body, checkoutColectionId } = params
+      const { codeVoucher } = body
+      const checkoutColection = await prisma.checkoutCollection.findUnique({
+        where: {
+          id: +checkoutColectionId,
+        },
+        include: {
+          checkout: true,
+        },
+      })
+      const promo = await prisma.promo.findUnique({
+        where: {
+          name: codeVoucher,
+        },
+        include: {
+          PromoType: true,
+        },
+      })
+      if (!promo) {
+        const error = new Error('voucher promo not found')
+        error.name = 'ErrorNotFound'
+        throw error
+      }
+      let discountPrice = 0
+      let totalItemPrice = checkoutColection.total_item_price
+      if (promo.PromoType.name === 'ALL_PRODUCT') {
+        discountPrice = totalItemPrice * promo.discount_percent / 100
+        totalItemPrice = totalItemPrice - discountPrice
+      }
+      await prisma.checkoutDiscount.create({
+        data: {
+          discount_price: discountPrice,
+          discount_percent: promo.discount_percent,
+          checkout_collection: {
+            connect: { id: +checkoutColectionId },
+          },
+          promo: {
+            connect: { id: +promo.id },
+          },
+        },
+      })
+      const updateCheckoutCollection = await prisma.checkoutCollection.update({
+        where: {
+          id: +checkoutColectionId,
+        },
+        data: {
+          total_item_price: totalItemPrice,
+        },
+        include: {
+          checkout: true,
+          CheckoutDiscount: true
+        }
+      })
+      return { updateCheckoutCollection }
+    } catch (error) {
+      if (error.code === 'P2002') {
+        const error = new Error('promo already input')
+        error.name = 'Conflict'
+        throw error
+      }
       console.log(error)
       throw error
     }

@@ -9,6 +9,7 @@ class CheckoutColectionController {
       next(error)
     }
   }
+  
 }
 
 module.exports = CheckoutColectionController

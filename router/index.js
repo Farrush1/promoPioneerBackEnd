@@ -8,6 +8,7 @@ const checkoutRoute = require('./checkout/index')
 const checkoutColectionRoute = require('./checkoutCollection/index')
 const userRoute = require('./user/index')
 const cartRoute = require('./cart/index')
+const promoRoute = require('./promo/index')
 // const authRouter = require("./auth/authRouter");
 
 router.get('/api/hello', function (req, res) {
@@ -21,5 +22,6 @@ router.use('/api/checkouts-colection', checkoutColectionRoute)
 
 router.use('/api/users', userRoute)
 router.use('/api/carts', cartRoute)
+router.use('/api/promo', promoRoute)
 
 module.exports = router

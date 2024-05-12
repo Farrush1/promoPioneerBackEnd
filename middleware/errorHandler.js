@@ -3,7 +3,7 @@ const errorHandler = (err, req, res, next) => {
     return res.status(400).json({ message: err.message })
   }
   if (err.name === 'ErrorNotFound') {
-    return res.status(404).json({ message: 'Not Found!' })
+    return res.status(404).json({ message: err.message })
   }
   if (err.name === 'InvalidCredential') {
     return res.status(401).json({ message: 'Invalid Credential!' })
