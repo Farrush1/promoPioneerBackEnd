@@ -3,16 +3,16 @@ const getDataUserCookie = require('../utils/cookie')
 const shippingCost = require('../utils/shippingCost')
 
 class CheckoutService {
-  static async getAll () {
+  static async getAll() {
     try {
       const checkout = await prisma.checkoutCollection.findMany({
         include: {
           checkout: {
             include: {
-              checkout_item: true
-            }
-          }
-        }
+              checkout_item: true,
+            },
+          },
+        },
       })
       return { checkout }
     } catch (error) {
@@ -21,20 +21,68 @@ class CheckoutService {
     }
   }
 
-  static async storeProduct (params) {
+  static async getById(params) {
+    const { checkoutColectionId, cookie } = params
+    const user = getDataUserCookie(cookie)
+    const { id } = user
+    const userData = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    })
+    const userCity = userData.city_id
+    if (!userCity) {
+      const error = new Error('user must have address')
+      error.name = 'BadRequest'
+      throw error
+    }
+    try {
+      const checkoutColection = await prisma.checkoutCollection.findUnique({
+        where: {
+          id: +checkoutColectionId,
+        },
+        include: {
+          checkout: {
+            include: {
+              checkout_item: true,
+            },
+          },
+        },
+      })
+      const checkouts = checkoutColection.checkout
+      for (const checkout of checkouts) {
+        console.log(checkout)
+        const shippingJNE = await shippingCost(checkout.city_id, userCity, checkout.total_weight, 'jne')
+        const shippingTIKI = await shippingCost(checkout.city_id, userCity, checkout.total_weight, 'tiki')
+        const shippingPOS = await shippingCost(checkout.city_id, userCity, checkout.total_weight, 'pos')
+        checkout.shipping_option = [shippingJNE[0], shippingTIKI[0], shippingPOS[0]]
+      }
+      return { checkouts }
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
+  static async storeProduct(params) {
     try {
       const { body, cookie, productId } = params
       const { quantity } = body
       const { id } = getDataUserCookie(cookie)
       const user = await prisma.user.findUnique({
-        where: { id }
+        where: { id },
       })
       const product = await prisma.product.findUnique({
         where: { id: +productId },
-        include:{
-          warehouse:true
-        }
+        include: {
+          warehouse: true,
+        },
       })
+      if (!user.full_address || !user.city_id) {
+        const error = new Error('user address and city required')
+        error.name = 'BadRequest'
+        throw error
+      }
       const totalPrice = product.price * quantity
       const totalWeight = product.weight * quantity
       const checkoutColection = await prisma.checkoutCollection.create({
@@ -42,21 +90,21 @@ class CheckoutService {
           user_id: id,
           total_item_price: totalPrice,
           checkout: {
-            create:{
+            create: {
               subtotal_price: totalPrice,
               total_weight: totalWeight,
               city_id: product.warehouse.city_id,
               status: 'incompleted',
-              checkout_item:{
-                create:{
+              checkout_item: {
+                create: {
                   product_id: +productId,
                   quantity,
-                  total_specific_price: totalPrice
-                }
-              }
-            }
-          }
-        } 
+                  total_specific_price: totalPrice,
+                },
+              },
+            },
+          },
+        },
       })
       return { checkoutColection }
     } catch (error) {
@@ -65,7 +113,7 @@ class CheckoutService {
     }
   }
 
-  static async create (params) {
+  static async create(params) {
     try {
       // belum order status incomplete, sudah order status pending, sudah payment status waiting
 
@@ -84,11 +132,11 @@ class CheckoutService {
       const { id } = getDataUserCookie(cookie)
       const user = await prisma.user.findUnique({
         where: {
-          id: +id
+          id: +id,
         },
         include: {
-          UserCity: true
-        }
+          UserCity: true,
+        },
       })
 
       const userCityId = user.city_id
@@ -98,15 +146,15 @@ class CheckoutService {
       for (const item of items) {
         const product = await prisma.product.findUnique({
           where: {
-            id: item.product_id
+            id: item.product_id,
           },
           include: {
             warehouse: {
               include: {
-                city: true
-              }
-            }
-          }
+                city: true,
+              },
+            },
+          },
         })
 
         if (!product) {
@@ -120,26 +168,26 @@ class CheckoutService {
           product.warehouse.city_id,
           userCityId,
           totalWeight,
-          'jne'
+          'jne',
         )
         const shippingTIKI = await shippingCost(
           product.warehouse.city_id,
           userCityId,
           totalWeight,
-          'tiki'
+          'tiki',
         )
         const shippingPOS = await shippingCost(
           product.warehouse.city_id,
           userCityId,
           totalWeight,
-          'pos'
+          'pos',
         )
 
         products.push({
           ...product,
           totalWeight,
           quantity: item.quantity,
-          shippingOption: [shippingJNE[0], shippingTIKI[0], shippingPOS[0]]
+          shippingOption: shippingJNE,
         }) // Tambahkan total berat ke dalam data produk
       }
 
@@ -154,7 +202,7 @@ class CheckoutService {
         total_shipping_price: null,
         status: 'incomplete',
         items,
-        products
+        products,
       }
     } catch (error) {
       console.log(error)

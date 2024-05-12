@@ -1,13 +1,18 @@
-async function shippingCost (origin, destination, weight, courier) {
+async function shippingCost(origin, destination, weight, courier) {
   try {
+    if (!origin || !destination || !weight || !courier) {
+      const error = new Error('origin, destionation, weight, and courier required')
+      error.name = 'BadRequest'
+      throw error
+    }
     const data = { origin, destination, weight, courier }
     const fetchCost = await fetch('https://api.rajaongkir.com/starter/cost', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        key: process.env.RAJAONGKIR_API_KEY
+        key: process.env.RAJAONGKIR_API_KEY,
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
     const response = await fetchCost.json()
     const result = response.rajaongkir.results

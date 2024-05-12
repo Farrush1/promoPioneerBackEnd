@@ -65,12 +65,12 @@ model WareHouse {
 }
 
 model User {
-  id                     Int                 @id @default(autoincrement())
+  id                     Int                  @id @default(autoincrement())
   name                   String
-  email                  String              @unique
+  email                  String               @unique
   password               String
-  role                   Role                @default(USER)
-  UserCity               City?               @relation(fields: [city_id], references: [id])
+  role                   Role                 @default(USER)
+  UserCity               City?                @relation(fields: [city_id], references: [id])
   city_id                Int?
   full_address           String?
   age                    Int?
@@ -80,7 +80,7 @@ model User {
   is_first_transaction   Boolean
   Cart                   Cart?
   affiliate_code         AffiliateCode?
-  checkout_collection    CheckoutCollection?
+  checkout_collection    CheckoutCollection[]
 }
 
 model Cart {
@@ -136,7 +136,7 @@ model CheckoutCollection {
   total_item_price     Int
   total_shipping_price Int?
   total_price          Int?
-  user_id              Int        @unique
+  user_id              Int
   user                 User       @relation(fields: [user_id], references: [id])
   payment              Payment?
   checkout             Checkout[]
@@ -159,13 +159,13 @@ model Checkout {
 }
 
 model CheckoutItem {
-  id          Int      @id @default(autoincrement())
-  checkout_id Int
-  product_id  Int
-  quantity    Int
+  id                   Int      @id @default(autoincrement())
+  checkout_id          Int
+  product_id           Int
+  quantity             Int
   total_specific_price Int
-  product     Product  @relation(fields: [product_id], references: [id])
-  checkout    Checkout @relation(fields: [checkout_id], references: [id])
+  product              Product  @relation(fields: [product_id], references: [id])
+  checkout             Checkout @relation(fields: [checkout_id], references: [id])
 }
 
 model Payment {

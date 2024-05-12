@@ -1,8 +1,9 @@
 const express = require('express')
+const CheckoutColectionController = require('../../controllers/checkoutColectionController')
 
 const router = express.Router()
 
-router.get('/', CategoryController.getAll)
+router.get('/', CheckoutColectionController.getAll)
 
 
 module.exports = router

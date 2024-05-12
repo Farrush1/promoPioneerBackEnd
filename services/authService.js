@@ -10,11 +10,10 @@ class AuthService {
       this.validateRegistrationParams(name, email, password, confirmPassword);
 
       let withCode = false;
-      let userAffiliate;
       if (affiliateCode) {
         withCode = true;
-        userAffiliate = generateAffiliateCode();
       }
+      const userAffiliate = generateAffiliateCode();
 
       const hashedPassword = await hashPassword(password);
       const user = await prisma.user.create({
