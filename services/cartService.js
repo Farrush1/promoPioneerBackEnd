@@ -2,12 +2,12 @@ const prisma = require('../libs/prisma')
 const getDataUserCookie = require('../utils/cookie')
 
 class CartService {
-  static async getAll() {
+  static async getAll () {
     try {
       const carts = await prisma.cart.findMany({
         include: {
-          cartItem: true,
-        },
+          cartItem: true
+        }
       })
       return { carts }
     } catch (error) {
@@ -16,26 +16,26 @@ class CartService {
     }
   }
 
-  static async store(params) {
+  static async store (params) {
     try {
       const { cookie, body } = params
-      const { product_id, quantity } = body
+      const { productId, quantity } = body
       const user = getDataUserCookie(cookie)
       const { id } = user
       const cart = await prisma.cart.findUnique({
         where: {
-          user_id: id,
-        },
+          user_id: id
+        }
       })
       const createItems = await prisma.cartItem.create({
         data: {
           cart_id: cart.id,
-          product_id,
-          quantity,
+          product_id: productId,
+          quantity
         },
         include: {
-          cart: true,
-        },
+          cart: true
+        }
       })
       console.log(createItems)
       return { createItems }
@@ -45,21 +45,21 @@ class CartService {
     }
   }
 
-  static async destroy(params) {
+  static async destroy (params) {
     try {
-      const { cookie, item_id } = params
+      const { cookie, itemId } = params
       const user = getDataUserCookie(cookie)
       const { id } = user
       const cart = await prisma.cart.findUnique({
         where: {
-          user_id: id,
-        },
+          user_id: id
+        }
       })
       const deleteItems = await prisma.cartItem.delete({
         where: {
-          id: +item_id,
+          id: +itemId,
           cart_id: cart.id
-        },
+        }
       })
 
       return { deleteItems }

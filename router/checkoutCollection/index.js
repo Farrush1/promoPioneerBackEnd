@@ -5,5 +5,4 @@ const router = express.Router()
 
 router.get('/', CheckoutColectionController.getAll)
 
-
 module.exports = router

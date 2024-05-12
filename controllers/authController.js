@@ -1,5 +1,5 @@
 const AuthService = require('../services/authService')
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 
 class AuthController {
   static async register (req, res, next) {

@@ -1,7 +1,7 @@
 const prisma = require('../libs/prisma')
 
 class PromoService {
-  static async getAll() {
+  static async getAll () {
     try {
       const promo = await prisma.promo.findMany()
       return { promo }
@@ -11,7 +11,7 @@ class PromoService {
     }
   }
 
-  static async store(params) {
+  static async store (params) {
     const { name, discountPercent, quantity, isLimited, startDate, endDate, promoTypeId } = params
     try {
       const promo = await prisma.promo.create({
@@ -22,11 +22,11 @@ class PromoService {
           isLimited,
           start_date: startDate,
           end_date: endDate,
-          promo_type_id: promoTypeId,
+          promo_type_id: promoTypeId
         },
         include: {
-          PromoType: true,
-        },
+          PromoType: true
+        }
       })
       return { promo }
     } catch (error) {

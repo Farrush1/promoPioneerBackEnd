@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 
 class AuthMiddleware {
-  static async authenticate(req, res, next) {
+  static async authenticate (req, res, next) {
     try {
       const token = req.cookies.accessToken
 

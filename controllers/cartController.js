@@ -25,10 +25,10 @@ class CartController {
 
   static async destroy (req, res, next) {
     try {
-		const params = {
-			cookie: req.cookies,
-			item_id: req.params.id
-		}
+      const params = {
+        cookie: req.cookies,
+        item_id: req.params.id
+      }
       const carts = await CartService.destroy(params)
       res.status(200).json(carts)
     } catch (error) {
