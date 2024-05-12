@@ -66,12 +66,13 @@ model WareHouse {
 }
 
 model User {
-  id                     Int                  @id @default(autoincrement())
-  name                   String
-  email                  String               @unique
-  password               String
-  role                   Role                 @default(USER)
-  UserCity               City?                @relation(fields: [city_id], references: [id])
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+  role     Role   @default(USER)
+  UserCity City?  @relation(fields: [city_id], references: [id])
+
   city_id                Int?
   full_address           String?
   age                    Int?

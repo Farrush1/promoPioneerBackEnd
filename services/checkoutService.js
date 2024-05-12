@@ -157,7 +157,7 @@ class CheckoutService {
       let discountPrice = 0
       let totalItemPrice = checkoutColection.total_item_price
       if (promo.PromoType.name === 'ALL_PRODUCT') {
-        discountPrice = totalItemPrice * promo.discount_percent / 100
+        discountPrice = (totalItemPrice * promo.discount_percent) / 100
         totalItemPrice = totalItemPrice - discountPrice
       }
       await prisma.checkoutDiscount.create({
