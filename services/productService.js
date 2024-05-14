@@ -1,6 +1,5 @@
-const cloudinaryUpload = require('../libs/cloudinary')
 const prisma = require('../libs/prisma')
-
+const cloudinaryUpload = require('../libs/cloudinary')
 class ProductService {
   static async getAllProducts() {
     try {
@@ -26,7 +25,7 @@ class ProductService {
     }
   }
 
-  static async updateProduct(productId, params) {
+  static async updateProduct(productId, params, res) {
     try {
       const { body, file } = params
       const {
@@ -39,7 +38,7 @@ class ProductService {
         price,
         stock,
         weight,
-      } = body
+      } = body || {}
       let object = {}
       if (categoryId) object.category_id = +categoryId
       if (warehouseName) object.warehouse_name = warehouseName
@@ -51,13 +50,18 @@ class ProductService {
       if (stock) object.stock = +stock
       if (weight) object.weight = +weight
 
+      let productImage = null
+      if (file) {
+        productImage = await cloudinaryUpload(file.path)
+        object.product_image = productImage.url
+      }
       const result = await prisma.product.update({
         where: {
           id: +productId,
         },
         data: object,
       })
-      const productImage = await cloudinaryUpload(file.path)
+      res.status(200).json({ result, productImage })
     } catch (error) {
       console.log(error)
       res.status(500).json({ message: error.message })

@@ -11,6 +11,6 @@ router.get('/api/hello', function (req, res) {
 })
 router.use('/api/category', categoryRoute)
 router.use('/api/auth', authRoute)
-router.use('/api/product', productRoute)
+router.use('/api/products', productRoute)
 
 module.exports = router

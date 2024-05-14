@@ -7,7 +7,7 @@ const router = express.Router()
 router.get('/', ProductController.getAllProducts);
 router.get('/:id', ProductController.getProductById)
 router.put('/:id', ProductController.updateProduct)
-router.delete('/', ProductController.deleteProduct)
+router.delete('/:id', ProductController.deleteProduct)
 
 router.post('/', upload.single('product_image'), ProductController.store)
 router.post('/upload', upload.single('image'), ProductController.upload)
