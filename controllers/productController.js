@@ -30,7 +30,7 @@ class ProductController {
       res.status(200).json({
         success: true,
         message: 'Uploaded!',
-        url: result.url
+        url: result
       })
     } catch (error) {
       console.error(error)

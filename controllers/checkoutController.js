@@ -38,6 +38,19 @@ class CheckoutController {
     }
   }
 
+  static async storeCart (req, res, next) {
+    try {
+      const params = {
+        cookie: req.cookies,
+        body: req.body
+      }
+      const checkouts = await CheckoutService.storeCart(params)
+      res.status(200).json(checkouts)
+    } catch (error) {
+      next(error)
+    }
+  }
+
   static async promoCheckout (req, res, next) {
     try {
       const params = {
