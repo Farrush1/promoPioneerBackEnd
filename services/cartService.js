@@ -6,7 +6,15 @@ class CartService {
     try {
       const carts = await prisma.cart.findMany({
         include: {
-          cartItem: true
+          cartItem: {
+            include: {
+              product: {
+                include: {
+                  warehouse: true
+                }
+              }
+            }
+          }
         }
       })
       return { carts }
@@ -29,9 +37,17 @@ class CartService {
       })
       const createItems = await prisma.cartItem.create({
         data: {
-          cart_id: cart.id,
-          product_id: productId,
-          quantity
+          quantity,
+          product: {
+            connect: {
+              id: productId
+            }
+          },
+          cart: {
+            connect: {
+              id: cart.id
+            }
+          }
         },
         include: {
           cart: true

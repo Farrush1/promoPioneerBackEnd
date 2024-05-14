@@ -19,6 +19,19 @@ class PromoController {
       next(error)
     }
   }
+
+  static async storeProductPromo (req, res, next) {
+    try {
+      const params = {
+        body: req.body,
+        productId: req.params.id
+      }
+      const promo = await PromoService.storeProductPromo(params)
+      return res.status(200).json(promo)
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 module.exports = PromoController

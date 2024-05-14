@@ -104,6 +104,8 @@ model PromoProduct {
   product_id Int
   promo      Promo   @relation(fields: [promo_id], references: [id])
   Product    Product @relation(fields: [product_id], references: [id])
+
+  @@unique([promo_id, product_id])
 }
 
 model AffiliateCode {
@@ -141,7 +143,7 @@ model CartItem {
 
 model CheckoutCollection {
   id                   Int                @id @default(autoincrement())
-  total_item_price     Int
+  total_item_price     Int?
   total_shipping_price Int?
   total_price          Int?
   user_id              Int
@@ -155,12 +157,12 @@ model Checkout {
   id                     Int                @id @default(autoincrement())
   checkout_collection_id Int
   total_checkout_price   Int?
-  subtotal_price         Int
+  subtotal_price         Int?
   shipping_name          String?
   shipping_service       String?
   shipping_price         Int?
   status                 String
-  total_weight           Int
+  total_weight           Int?
   city_id                Int
   city                   City               @relation(fields: [city_id], references: [id])
   checkout_collection    CheckoutCollection @relation(fields: [checkout_collection_id], references: [id])
@@ -173,6 +175,7 @@ model CheckoutItem {
   product_id           Int
   quantity             Int
   total_specific_price Int
+  weight               Int
   product              Product  @relation(fields: [product_id], references: [id])
   checkout             Checkout @relation(fields: [checkout_id], references: [id])
 }
@@ -192,7 +195,7 @@ model CheckoutDiscount {
 model Payment {
   id                     Int                @id @default(autoincrement())
   checkout_collection_id Int                @unique
-  payment_proof          Int
+  payment_proof          String?
   payment_status         String
   checkout_colection     CheckoutCollection @relation(fields: [checkout_collection_id], references: [id])
 }
