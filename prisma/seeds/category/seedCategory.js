@@ -10,7 +10,7 @@ const CATEGORIES = [
   { id: 7, name: 'Mainan Bayi' },
   { id: 8, name: 'Perlengkapan Mandi Bayi' },
   { id: 9, name: 'Peralatan Penyusuan Bayi' },
-  { id: 10, name: 'Kesehatan dan Keamanan Bayi' },
+  { id: 10, name: 'Kesehatan dan Keamanan Bayi' }
 ]
 
 const seedCategories = async () => {
@@ -19,9 +19,9 @@ const seedCategories = async () => {
       await prisma.category.upsert({
         where: { id: category.id },
         update: {},
-        create: category,
+        create: category
       })
-    }),
+    })
   )
 }
 

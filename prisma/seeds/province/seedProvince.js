@@ -1,13 +1,13 @@
 const prisma = require('../../../libs/prisma')
 
-async function getProvince() {
+async function getProvince () {
   try {
     const fetchProvince = await fetch('https://api.rajaongkir.com/starter/province', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        key: process.env.RAJAONGKIR_API_KEY,
-      },
+        key: process.env.RAJAONGKIR_API_KEY
+      }
     })
     const data = await fetchProvince.json()
     const dataRes = data.rajaongkir.results
@@ -31,9 +31,9 @@ const seedProvince = async () => {
         await prisma.province.upsert({
           where: { id: prov.id },
           update: {},
-          create: prov,
+          create: prov
         })
-      }),
+      })
     )
   } catch (error) {
     console.log(error)

@@ -1,4 +1,4 @@
-const ProvinceService = require("../services/provinceService")
+const ProvinceService = require('../services/provinceService')
 
 class ProvinceController {
   static getAll = async (req, res, next) => {

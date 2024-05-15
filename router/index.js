@@ -32,5 +32,4 @@ router.use('/api/cities', cityRoute)
 router.use('/api/provinces', provinceRoute)
 router.use('/api/warehouses', wareHouseRoute)
 
-
 module.exports = router

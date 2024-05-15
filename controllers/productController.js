@@ -3,7 +3,7 @@ const prisma = require('../libs/prisma')
 const ProductService = require('../services/productService')
 const cloudinaryUpload = require('../libs/cloudinary')
 class ProductController {
-  static async getAllProducts(req, res, next) {
+  static async getAllProducts (req, res, next) {
     try {
       const products = await ProductService.getAllProducts(req.query)
       return res.status(200).json(products)
@@ -13,7 +13,7 @@ class ProductController {
     }
   }
 
-  static async getProductById(req, res, next) {
+  static async getProductById (req, res, next) {
     try {
       const productId = req.params.id
       const product = await ProductService.getProductById(productId)
@@ -28,7 +28,7 @@ class ProductController {
     }
   }
 
-  static async updateProduct(req, res, next) {
+  static async updateProduct (req, res, next) {
     try {
       const productId = req.params.id
       const product = await ProductService.updateProduct(productId, req.body)
@@ -39,7 +39,7 @@ class ProductController {
     }
   }
 
-  static async deleteProduct(req, res, next) {
+  static async deleteProduct (req, res, next) {
     try {
       const productId = req.params.id
       const product = await ProductService.deleteProduct(productId)
@@ -50,11 +50,11 @@ class ProductController {
     }
   }
 
-  static async store(req, res, next) {
+  static async store (req, res, next) {
     try {
       const params = {
         file: req.file,
-        body: req.body,
+        body: req.body
       }
       const product = await ProductService.store(params)
       return res.status(200).json(product)
@@ -64,25 +64,25 @@ class ProductController {
     }
   }
 
-  static async upload(req, res) {
+  static async upload (req, res) {
     try {
       const result = await cloudinaryUpload(req.file.path)
       res.status(200).json({
         success: true,
         message: 'Uploaded!',
 
-        url: result.url,
+        url: result.url
       })
     } catch (error) {
       console.error(error)
       res.status(500).json({
         success: false,
-        message: 'Error',
+        message: 'Error'
       })
     }
   }
 
-  static async delete(req, res, next) {
+  static async delete (req, res, next) {
     try {
       const product = await prisma.product.deleteMany()
       console.log(product)

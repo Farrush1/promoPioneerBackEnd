@@ -14,7 +14,7 @@ class AuthService {
         const checkAffiliate = await prisma.affiliateCode.findUnique({
           where: {
             affiliate_code: affiliateCode
-          },
+          }
         })
         if (!checkAffiliate) {
           const error = new Error('wrong affiliate code')
@@ -34,14 +34,14 @@ class AuthService {
           is_first_transaction: false,
           affiliate_code: {
             create: {
-              affiliate_code: userAffiliate,
-            },
-          },
+              affiliate_code: userAffiliate
+            }
+          }
         },
 
         include: {
-          affiliate_code: true,
-        },
+          affiliate_code: true
+        }
       })
       await prisma.cart.create({
         data: {

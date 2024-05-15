@@ -1,4 +1,3 @@
-const prisma = require('../libs/prisma')
 const CategoryService = require('../services/categoryService')
 const dotenv = require('dotenv')
 dotenv.config()

@@ -1,12 +1,12 @@
 const prisma = require('../libs/prisma')
 
 class WarehouseService {
-  static async getAll() {
+  static async getAll () {
     try {
       const warehouse = await prisma.wareHouse.findMany({
         include: {
-          city: true,
-        },
+          city: true
+        }
       })
       return { warehouse }
     } catch (error) {

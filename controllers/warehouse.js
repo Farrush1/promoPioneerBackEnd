@@ -1,4 +1,3 @@
-const CityService = require('../services/cityService')
 const WarehouseService = require('../services/warehouseService')
 
 class WarehouseController {

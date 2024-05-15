@@ -10,7 +10,7 @@ const PRODUCT = [
     description: 'Jumper bayi berbahan lembut dan nyaman dengan desain lucu',
     product_image: 'jumper.jpg',
     stock: 50,
-    weight: 150,
+    weight: 150
   },
   {
     id: 2,
@@ -21,7 +21,7 @@ const PRODUCT = [
     description: 'Setelan baju dan celana bayi dengan warna-warna polos yang cerah',
     product_image: 'setelan.jpg',
     stock: 70,
-    weight: 120,
+    weight: 120
   },
 
   // Produk untuk kategori "Peralatan Makan Bayi"
@@ -34,7 +34,7 @@ const PRODUCT = [
     description: 'Set sendok dan garpu bayi dengan desain ergonomis dan aman untuk bayi',
     product_image: 'sendok_garpu.jpg',
     stock: 100,
-    weight: 50,
+    weight: 50
   },
   {
     id: 4,
@@ -45,7 +45,7 @@ const PRODUCT = [
     description: 'Piring bayi dengan suction cup anti-tumpah dan mudah dibersihkan',
     product_image: 'piring.jpg',
     stock: 80,
-    weight: 70,
+    weight: 70
   },
 
   {
@@ -57,7 +57,7 @@ const PRODUCT = [
     description: 'Popok sekali pakai dengan daya serap tinggi dan lembut di kulit bayi',
     product_image: 'popok.jpg',
     stock: 120,
-    weight: 100,
+    weight: 100
   },
   {
     id: 6,
@@ -68,7 +68,7 @@ const PRODUCT = [
     description: 'Pembalut kain bayi yang ramah lingkungan dan cocok untuk kulit sensitif',
     product_image: 'pembalut.jpg',
     stock: 90,
-    weight: 80,
+    weight: 80
   },
 
   {
@@ -80,7 +80,7 @@ const PRODUCT = [
     description: 'Botol susu bayi dengan desain anti-colic untuk mengurangi masuk angin',
     product_image: 'botol_susu.jpg',
     stock: 60,
-    weight: 70,
+    weight: 70
   },
   {
     id: 8,
@@ -91,7 +91,7 @@ const PRODUCT = [
     description: 'Sterilizer botol susu yang praktis dan aman untuk digunakan',
     product_image: 'sterilizer.jpg',
     stock: 40,
-    weight: 150,
+    weight: 150
   },
 
   {
@@ -103,7 +103,7 @@ const PRODUCT = [
     description: 'Stroller lipat yang ringan dan mudah dibawa bepergian',
     product_image: 'stroller.jpg',
     stock: 30,
-    weight: 500,
+    weight: 500
   },
   {
     id: 10,
@@ -114,7 +114,7 @@ const PRODUCT = [
     description: 'Kereta dorong bayi dengan roda yang stabil dan dapat diputar 360 derajat',
     product_image: 'kereta_dorong.jpg',
     stock: 20,
-    weight: 800,
+    weight: 800
   },
 
   {
@@ -126,7 +126,7 @@ const PRODUCT = [
     description: 'Tempat tidur bayi lipat dengan bingkai kokoh dan kasur yang nyaman',
     product_image: 'tempat_tidur.jpg',
     stock: 25,
-    weight: 1000,
+    weight: 1000
   },
   {
     id: 12,
@@ -137,7 +137,7 @@ const PRODUCT = [
     description: 'Lampu tidur bayi dengan desain lucu dan cahaya yang lembut',
     product_image: 'lampu_tidur.jpg',
     stock: 35,
-    weight: 300,
+    weight: 300
   },
 
   {
@@ -149,7 +149,7 @@ const PRODUCT = [
     description: 'Guling bayi dengan desain warna-warni dan berbagai mainan gantung',
     product_image: 'guling.jpg',
     stock: 45,
-    weight: 200,
+    weight: 200
   },
   {
     id: 14,
@@ -160,7 +160,7 @@ const PRODUCT = [
     description: 'Buku bayi yang berisi gambar-gambar lucu dan suara-suara yang menghibur',
     product_image: 'buku_bayi.jpg',
     stock: 55,
-    weight: 150,
+    weight: 150
   },
 
   {
@@ -172,7 +172,7 @@ const PRODUCT = [
     description: 'Bath tub bayi yang bisa dilipat untuk menghemat ruang',
     product_image: 'bath_tub.jpg',
     stock: 40,
-    weight: 600,
+    weight: 600
   },
   {
     id: 16,
@@ -183,8 +183,8 @@ const PRODUCT = [
     description: 'Shampoo bayi dengan bahan-bahan organik yang lembut di kulit',
     product_image: 'shampoo.jpg',
     stock: 65,
-    weight: 200,
-  },
+    weight: 200
+  }
 ]
 
 const seedWarehouse = async () => {
@@ -193,9 +193,8 @@ const seedWarehouse = async () => {
       await prisma.wareHouse.upsert({
         where: { id: warehouse.id },
         update: {},
-        create: warehouse,
+        create: warehouse
       })
-    }),
+    })
   )
 }
-

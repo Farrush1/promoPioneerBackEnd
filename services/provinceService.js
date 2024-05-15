@@ -1,14 +1,14 @@
 const prisma = require('../libs/prisma')
 
 class ProvinceService {
-  static async getAll() {
+  static async getAll () {
     try {
       const province = await prisma.province.findMany({
         orderBy: [
           {
-            id: 'asc',
-          },
-        ],
+            id: 'asc'
+          }
+        ]
       })
       return { province }
     } catch (error) {

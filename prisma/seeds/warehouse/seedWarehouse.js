@@ -20,7 +20,7 @@ const WAREHOUSE = [
   { id: 17, name: 'Gudang Pergunungan', location: 'Jl. Pergunungan No. 3637', city_id: 17 },
   { id: 18, name: 'Gudang Persawahan', location: 'Jl. Persawahan No. 3839', city_id: 18 },
   { id: 19, name: 'Gudang Pesisir', location: 'Jl. Pesisir No. 4041', city_id: 19 },
-  { id: 20, name: 'Gudang Pegunungan', location: 'Jl. Pegunungan No. 4243', city_id: 20 },
+  { id: 20, name: 'Gudang Pegunungan', location: 'Jl. Pegunungan No. 4243', city_id: 20 }
 ]
 
 const seedWarehouse = async () => {
@@ -29,9 +29,9 @@ const seedWarehouse = async () => {
       await prisma.wareHouse.upsert({
         where: { id: warehouse.id },
         update: {},
-        create: warehouse,
+        create: warehouse
       })
-    }),
+    })
   )
 }
 

@@ -3,13 +3,13 @@ const prisma = require('../libs/prisma')
 const getDataUserCookie = require('../utils/cookie')
 
 class UserService {
-  static async getAll() {
+  static async getAll () {
     try {
       const users = await prisma.user.findMany({
         include: {
           Cart: true,
-          affiliate_code: true,
-        },
+          affiliate_code: true
+        }
       })
       return { users }
     } catch (error) {
@@ -18,12 +18,12 @@ class UserService {
     }
   }
 
-  static async getById(id) {
+  static async getById (id) {
     try {
       const users = await prisma.user.findUnique({
         where: {
-          id: +id,
-        },
+          id: +id
+        }
       })
       return { users }
     } catch (error) {
@@ -32,14 +32,14 @@ class UserService {
     }
   }
 
-  static async getBio(params) {
+  static async getBio (params) {
     try {
       const user = getDataUserCookie(params)
       const { id } = user
       const users = await prisma.user.findUnique({
         where: {
-          id,
-        },
+          id
+        }
       })
       return { users }
     } catch (error) {
@@ -48,7 +48,7 @@ class UserService {
     }
   }
 
-  static async updateBio(params) {
+  static async updateBio (params) {
     try {
       const { cookie, body, file } = params
       const { userCityId, fullAddress, age, gender } = body
@@ -61,8 +61,8 @@ class UserService {
       const { id } = user
       const users = await prisma.user.findUnique({
         where: {
-          id,
-        },
+          id
+        }
       })
       if (!users) {
         const error = new Error('user not found')
@@ -76,15 +76,15 @@ class UserService {
       const userAvatar = await cloudinaryUpload(file.path)
       const updateUser = await prisma.user.update({
         where: {
-          id,
+          id
         },
         data: {
           city_id: +userCityId,
           full_address: fullAddress,
           age: +age,
           gender,
-          avatar: userAvatar.url,
-        },
+          avatar: userAvatar.url
+        }
       })
       return { user: updateUser }
     } catch (error) {
@@ -93,22 +93,22 @@ class UserService {
     }
   }
 
-  static async setAddress(params) {
+  static async setAddress (params) {
     try {
       const { body, cookie } = params
       const { fullAddress, cityId } = body
       const { id } = getDataUserCookie(cookie)
       const updateUser = await prisma.user.update({
         where: {
-          id: +id,
+          id: +id
         },
         data: {
           full_address: fullAddress,
-          city_id: +cityId,
+          city_id: +cityId
         },
         include: {
-          UserCity: true,
-        },
+          UserCity: true
+        }
       })
       return { updateUser }
     } catch (error) {
