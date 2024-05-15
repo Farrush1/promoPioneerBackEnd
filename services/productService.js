@@ -1,8 +1,7 @@
-const cloudinaryUpload = require('../libs/cloudinary')
 const prisma = require('../libs/prisma')
-
+const cloudinaryUpload = require('../libs/cloudinary')
 class ProductService {
-  static async getAll () {
+  static async getAllProducts() {
     try {
       const result = await prisma.product.findMany({
         include: {
@@ -20,7 +19,21 @@ class ProductService {
     }
   }
 
-  static async store (params) {
+  static async getProductById(productId) {
+    try {
+      const result = await prisma.product.findUnique({
+        where: {
+          id: +productId,
+        },
+      })
+      return result
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
+  static async updateProduct(productId, params, res) {
     try {
       const { body, file } = params
       const {
@@ -32,7 +45,64 @@ class ProductService {
         description,
         price,
         stock,
-        weight
+        weight,
+      } = body || {}
+      let object = {}
+      if (categoryId) object.category_id = +categoryId
+      if (warehouseName) object.warehouse_name = warehouseName
+      if (warehouseFullAddress) object.warehouse_full_address = warehouseFullAddress
+      if (warehouseCityId) object.warehouse_city_id = +warehouseCityId
+      if (name) object.name = name
+      if (description) object.description = description
+      if (price) object.price = +price
+      if (stock) object.stock = +stock
+      if (weight) object.weight = +weight
+
+      let productImage = null
+      if (file) {
+        productImage = await cloudinaryUpload(file.path)
+        object.product_image = productImage.url
+      }
+      const result = await prisma.product.update({
+        where: {
+          id: +productId,
+        },
+        data: object,
+      })
+      res.status(200).json({ result, productImage })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ message: error.message })
+    }
+  }
+
+  static async deleteProduct(productId) {
+    try {
+      const result = await prisma.product.delete({
+        where: {
+          id: +productId,
+        },
+      })
+      return result
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
+  static async store(params) {
+    try {
+      const { body, file } = params
+      const {
+        categoryId,
+        warehouseName,
+        warehouseFullAddress,
+        warehouseCityId,
+        name,
+        description,
+        price,
+        stock,
+        weight,
       } = body
       if (!file) {
         const error = new Error('Insert photo product')
@@ -55,25 +125,25 @@ class ProductService {
               location: warehouseFullAddress,
               city: {
                 connect: {
-                  id: +warehouseCityId
-                }
-              }
-            }
+                  id: +warehouseCityId,
+                },
+              },
+            },
           },
           category: {
             connect: {
-              id: +categoryId
-            }
-          }
+              id: +categoryId,
+            },
+          },
         },
         include: {
           warehouse: {
             include: {
-              city: true
-            }
+              city: true,
+            },
           },
-          category: true
-        }
+          category: true,
+        },
       })
       return { result }
     } catch (error) {

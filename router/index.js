@@ -18,6 +18,7 @@ router.get('/api/hello', function (req, res) {
 router.use('/api/categories', categoryRoute)
 router.use('/api/auth', authRoute)
 router.use('/api/products', productRoute)
+
 router.use('/api/checkouts', checkoutRoute)
 router.use('/api/checkouts-colection', checkoutColectionRoute)
 
@@ -25,5 +26,6 @@ router.use('/api/users', userRoute)
 router.use('/api/carts', cartRoute)
 router.use('/api/promo', promoRoute)
 router.use('/api/payments', paymentRoute)
+
 
 module.exports = router
