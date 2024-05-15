@@ -3,7 +3,15 @@ const cloudinaryUpload = require('../libs/cloudinary')
 class ProductService {
   static async getAllProducts() {
     try {
-      const result = await prisma.product.findMany()
+      const result = await prisma.product.findMany({
+        include: {
+          warehouse: {
+            include: {
+              city: true
+            }
+          }
+        }
+      })
       return { result }
     } catch (error) {
       console.log(error)

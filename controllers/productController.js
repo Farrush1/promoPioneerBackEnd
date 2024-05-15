@@ -2,6 +2,7 @@ const prisma = require('../libs/prisma')
 
 const ProductService = require('../services/productService')
 const cloudinaryUpload = require('../libs/cloudinary')
+const prisma = require('../libs/prisma')
 class ProductController {
   static async getAllProducts(req, res, next) {
     try {
@@ -92,7 +93,9 @@ class ProductController {
       res.status(200).json({
         success: true,
         message: 'Uploaded!',
+
         url: result.url,
+
       })
     } catch (error) {
       console.error(error)
@@ -100,6 +103,16 @@ class ProductController {
         success: false,
         message: 'Error',
       })
+    }
+  }
+
+  static async delete (req, res, next) {
+    try {
+      const product = await prisma.product.deleteMany()
+      console.log(product)
+      return res.status(200).json(product)
+    } catch (error) {
+      next(error)
     }
   }
 }

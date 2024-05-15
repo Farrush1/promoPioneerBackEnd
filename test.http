@@ -1,0 +1,24 @@
+POST http://localhost:5000/api/auth/register
+
+{
+    "name": "John Doe",
+    "email": "john@gmail.com",
+    "password": "123456",
+    "confirmPassword": "123456",
+    "affiliateCode": "123456"
+}
+
+
+### LOGIN
+POST http://localhost:5000/api/auth/login
+
+  {
+    "email": "john@gmail.com",
+    "password": "123456"
+  }
+
+### logout
+GET http://localhost:5000/api/auth/logout
+
+### get user
+GET 
