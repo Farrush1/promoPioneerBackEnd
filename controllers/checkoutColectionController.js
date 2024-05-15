@@ -3,8 +3,7 @@ const prisma = require('../libs/prisma')
 class CheckoutColectionController {
   static async getAll (req, res, next) {
     try {
-      const checkout = await prisma.checkoutCollection.findUnique({
-        where: { id: 4 },
+      const checkout = await prisma.checkoutCollection.findMany({
         include: {
           checkout: {
             include: {
