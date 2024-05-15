@@ -12,15 +12,6 @@ class CategoryController {
     }
   }
 
-  static getCity = async (req, res, next) => {
-    try {
-      const category = await prisma.city.findMany()
-      res.status(200).json({ message: 'All Categories', category })
-    } catch (error) {
-      next(error)
-    }
-  }
-
   static create = async (req, res, next) => {
     try {
       const { name } = req.body

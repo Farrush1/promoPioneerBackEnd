@@ -1,18 +1,29 @@
 const prisma = require('../libs/prisma')
 const cloudinaryUpload = require('../libs/cloudinary')
 class ProductService {
-  static async getAllProducts() {
+  static async getAllProducts(params) {
     try {
-      const result = await prisma.product.findMany({
-        include: {
-          warehouse: {
-            include: {
-              city: true
-            }
-          }
-        }
+      let { page, limit } = params
+      page = parseInt(page) || 1
+      limit = parseInt(limit) || 10
+
+      if (page < 1 || limit < 1) {
+        const error = new Error('Page and limit must bigger than 0.')
+        error.name = 'ErrorNotFound'
+        throw error
+      }
+
+      const startIndex = (page - 1) * limit
+
+      const products = await prisma.product.findMany({
+        skip: startIndex,
+        take: limit,
       })
-      return { result }
+
+      const totalProducts = await prisma.product.count()
+
+      const totalPages = Math.ceil(totalProducts / limit)
+      return { currentPage: page, totalPages, totalProducts, products }
     } catch (error) {
       console.log(error)
       throw error
@@ -47,7 +58,7 @@ class ProductService {
         stock,
         weight,
       } = body || {}
-      let object = {}
+      const object = {}
       if (categoryId) object.category_id = +categoryId
       if (warehouseName) object.warehouse_name = warehouseName
       if (warehouseFullAddress) object.warehouse_full_address = warehouseFullAddress

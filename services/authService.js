@@ -11,6 +11,15 @@ class AuthService {
 
       let withCode = false
       if (affiliateCode) {
+        const checkAffiliate = await prisma.affiliateCode.findUnique({
+          where: {
+            affiliate_code: affiliateCode
+          },
+        })
+        if (!checkAffiliate) {
+          const error = new Error('wrong affiliate code')
+          error.name = 'BadRequest'
+        }
         withCode = true
       }
       const userAffiliate = generateAffiliateCode()
@@ -23,13 +32,16 @@ class AuthService {
           password: hashedPassword,
           is_register_using_code: withCode,
           is_first_transaction: false,
-          affiliate_code: withCode ? { create: { affiliate_code: userAffiliate } } : undefined
+          affiliate_code: {
+            create: {
+              affiliate_code: userAffiliate,
+            },
+          },
         },
 
         include: {
-          affiliate_code: true
-
-        }
+          affiliate_code: true,
+        },
       })
       await prisma.cart.create({
         data: {
@@ -69,21 +81,7 @@ class AuthService {
         secure: true
       })
 
-      return { message: 'success login', accessToken: token }
-    } catch (error) {
-      console.log(error)
-      throw error
-    }
-  }
-
-  static async user (req, res) {
-    try {
-      const user = await prisma.user.findUnique({
-        where: { id: req.user.id },
-        include: { affiliate_code: true }
-      })
-
-      return { user }
+      return { message: 'success login' }
     } catch (error) {
       console.log(error)
       throw error

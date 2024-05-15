@@ -10,7 +10,9 @@ const userRoute = require('./user/index')
 const cartRoute = require('./cart/index')
 const promoRoute = require('./promo/index')
 const paymentRoute = require('./payment/index')
-// const authRouter = require("./auth/authRouter");
+const cityRoute = require('./city/index')
+const provinceRoute = require('./province/index')
+const wareHouseRoute = require('./warehouse/index')
 
 router.get('/api/hello', function (req, res) {
   res.status(200).json({ message: 'hello world' })
@@ -26,6 +28,9 @@ router.use('/api/users', userRoute)
 router.use('/api/carts', cartRoute)
 router.use('/api/promo', promoRoute)
 router.use('/api/payments', paymentRoute)
+router.use('/api/cities', cityRoute)
+router.use('/api/provinces', provinceRoute)
+router.use('/api/warehouses', wareHouseRoute)
 
 
 module.exports = router

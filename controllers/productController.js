@@ -2,36 +2,13 @@ const prisma = require('../libs/prisma')
 
 const ProductService = require('../services/productService')
 const cloudinaryUpload = require('../libs/cloudinary')
-const prisma = require('../libs/prisma')
 class ProductController {
   static async getAllProducts(req, res, next) {
     try {
-      const page = parseInt(req.query.page) || 1
-      const limit = parseInt(req.query.limit) || 10
-
-      if (page < 1 || limit < 1) {
-        return res.status(400).json({ message: "Page and limit must bigger than 0." });
-      }
-
-      const startIndex = (page - 1) * limit
-
-      const products = await prisma.product.findMany({
-        skip: startIndex,
-        take: limit,
-      })
-
-      const totalProducts = await prisma.product.count()
-
-      const totalPages = Math.ceil(totalProducts / limit)
-
-      return res.status(200).json({
-        currentPage: page,
-        totalPages: totalPages,
-        totalProducts: totalProducts,
-        products: products,
-      })
+      const products = await ProductService.getAllProducts(req.query)
+      return res.status(200).json(products)
     } catch (error) {
-      console.error("Error get all products:", error)
+      console.error('Error get all products:', error)
       next(error)
     }
   }
@@ -46,7 +23,7 @@ class ProductController {
       res.status(200).json(product)
     } catch (error) {
       next(error)
-      console.error("Error get product by id:", error)
+      console.error('Error get product by id:', error)
       res.status(500).json({ message: error.message })
     }
   }
@@ -95,7 +72,6 @@ class ProductController {
         message: 'Uploaded!',
 
         url: result.url,
-
       })
     } catch (error) {
       console.error(error)
@@ -106,7 +82,7 @@ class ProductController {
     }
   }
 
-  static async delete (req, res, next) {
+  static async delete(req, res, next) {
     try {
       const product = await prisma.product.deleteMany()
       console.log(product)
