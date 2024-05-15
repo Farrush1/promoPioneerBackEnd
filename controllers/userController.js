@@ -19,6 +19,29 @@ class userController {
     }
   }
 
+  static async getBio (req, res, next) {
+    try {
+      const user = await UserService.getBio(req.cookies)
+      return res.status(200).json(user)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async updateBio (req, res, next) {
+    try {
+      const params = {
+        file: req.file,
+        cookie: req.cookies,
+        body: req.body
+      }
+      const user = await UserService.updateBio(params)
+      return res.status(200).json(user)
+    } catch (error) {
+      next(error)
+    }
+  }
+
   static async setAddress (req, res, next) {
     try {
       const params = {

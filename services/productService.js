@@ -1,30 +1,41 @@
 const prisma = require('../libs/prisma')
 const cloudinaryUpload = require('../libs/cloudinary')
 class ProductService {
-  static async getAllProducts() {
+  static async getAllProducts (params) {
     try {
-      const result = await prisma.product.findMany({
-        include: {
-          warehouse: {
-            include: {
-              city: true
-            }
-          }
-        }
+      let { page, limit } = params
+      page = parseInt(page) || 1
+      limit = parseInt(limit) || 10
+
+      if (page < 1 || limit < 1) {
+        const error = new Error('Page and limit must bigger than 0.')
+        error.name = 'ErrorNotFound'
+        throw error
+      }
+
+      const startIndex = (page - 1) * limit
+
+      const products = await prisma.product.findMany({
+        skip: startIndex,
+        take: limit
       })
-      return { result }
+
+      const totalProducts = await prisma.product.count()
+
+      const totalPages = Math.ceil(totalProducts / limit)
+      return { currentPage: page, totalPages, totalProducts, products }
     } catch (error) {
       console.log(error)
       throw error
     }
   }
 
-  static async getProductById(productId) {
+  static async getProductById (productId) {
     try {
       const result = await prisma.product.findUnique({
         where: {
-          id: +productId,
-        },
+          id: +productId
+        }
       })
       return result
     } catch (error) {
@@ -33,7 +44,7 @@ class ProductService {
     }
   }
 
-  static async updateProduct(productId, params, res) {
+  static async updateProduct (productId, params, res) {
     try {
       const { body, file } = params
       const {
@@ -45,9 +56,9 @@ class ProductService {
         description,
         price,
         stock,
-        weight,
+        weight
       } = body || {}
-      let object = {}
+      const object = {}
       if (categoryId) object.category_id = +categoryId
       if (warehouseName) object.warehouse_name = warehouseName
       if (warehouseFullAddress) object.warehouse_full_address = warehouseFullAddress
@@ -65,9 +76,9 @@ class ProductService {
       }
       const result = await prisma.product.update({
         where: {
-          id: +productId,
+          id: +productId
         },
-        data: object,
+        data: object
       })
       res.status(200).json({ result, productImage })
     } catch (error) {
@@ -76,12 +87,12 @@ class ProductService {
     }
   }
 
-  static async deleteProduct(productId) {
+  static async deleteProduct (productId) {
     try {
       const result = await prisma.product.delete({
         where: {
-          id: +productId,
-        },
+          id: +productId
+        }
       })
       return result
     } catch (error) {
@@ -90,7 +101,7 @@ class ProductService {
     }
   }
 
-  static async store(params) {
+  static async store (params) {
     try {
       const { body, file } = params
       const {
@@ -102,7 +113,7 @@ class ProductService {
         description,
         price,
         stock,
-        weight,
+        weight
       } = body
       if (!file) {
         const error = new Error('Insert photo product')
@@ -125,25 +136,25 @@ class ProductService {
               location: warehouseFullAddress,
               city: {
                 connect: {
-                  id: +warehouseCityId,
-                },
-              },
-            },
+                  id: +warehouseCityId
+                }
+              }
+            }
           },
           category: {
             connect: {
-              id: +categoryId,
-            },
-          },
+              id: +categoryId
+            }
+          }
         },
         include: {
           warehouse: {
             include: {
-              city: true,
-            },
+              city: true
+            }
           },
-          category: true,
-        },
+          category: true
+        }
       })
       return { result }
     } catch (error) {

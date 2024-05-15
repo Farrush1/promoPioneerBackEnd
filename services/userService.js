@@ -1,3 +1,4 @@
+const cloudinaryUpload = require('../libs/cloudinary')
 const prisma = require('../libs/prisma')
 const getDataUserCookie = require('../utils/cookie')
 
@@ -25,6 +26,67 @@ class UserService {
         }
       })
       return { users }
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
+  static async getBio (params) {
+    try {
+      const user = getDataUserCookie(params)
+      const { id } = user
+      const users = await prisma.user.findUnique({
+        where: {
+          id
+        }
+      })
+      return { users }
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
+  static async updateBio (params) {
+    try {
+      const { cookie, body, file } = params
+      const { userCityId, fullAddress, age, gender } = body
+      if (!userCityId || !fullAddress || !age || !gender) {
+        const error = new Error('field requied')
+        error.name = 'BadRequest'
+        throw error
+      }
+      const user = getDataUserCookie(cookie)
+      const { id } = user
+      const users = await prisma.user.findUnique({
+        where: {
+          id
+        }
+      })
+      if (!users) {
+        const error = new Error('user not found')
+        error.name = 'ErrorNotFound'
+      }
+      if (!file) {
+        const error = new Error('Insert photo product')
+        error.name = 'BadRequest'
+        throw error
+      }
+      const userAvatar = await cloudinaryUpload(file.path)
+      const updateUser = await prisma.user.update({
+        where: {
+          id
+        },
+        data: {
+          city_id: +userCityId,
+          full_address: fullAddress,
+          age: +age,
+          gender,
+          avatar: userAvatar.url
+        }
+      })
+      return { user: updateUser }
     } catch (error) {
       console.log(error)
       throw error

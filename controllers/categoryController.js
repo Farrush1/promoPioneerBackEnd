@@ -1,4 +1,3 @@
-const prisma = require('../libs/prisma')
 const CategoryService = require('../services/categoryService')
 const dotenv = require('dotenv')
 dotenv.config()
@@ -6,15 +5,6 @@ class CategoryController {
   static getAll = async (req, res, next) => {
     try {
       const category = await CategoryService.getAll()
-      res.status(200).json({ message: 'All Categories', category })
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  static getCity = async (req, res, next) => {
-    try {
-      const category = await prisma.city.findMany()
       res.status(200).json({ message: 'All Categories', category })
     } catch (error) {
       next(error)

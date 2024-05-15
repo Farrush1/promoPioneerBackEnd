@@ -1,5 +1,4 @@
 const AuthService = require('../services/authService')
-// const jwt = require("jsonwebtoken");
 
 class AuthController {
   static async register (req, res, next) {
@@ -14,15 +13,6 @@ class AuthController {
   static async login (req, res, next) {
     try {
       const user = await AuthService.login(req.body, res)
-      res.status(200).json(user)
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  static async user (req, res, next) {
-    try {
-      const user = await AuthService.user(req, res)
       res.status(200).json(user)
     } catch (error) {
       next(error)
