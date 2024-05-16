@@ -4,13 +4,13 @@ const AFFILIATECODE = [
   {
     // id: 1,
     user_id: 1,
-    affiliate_code: '638WH7',
+    affiliate_code: '638WH7'
   },
   {
     // id: 2,
     user_id: 2,
-    affiliate_code: 'VX6TKX',
-  },
+    affiliate_code: 'VX6TKX'
+  }
 ]
 
 const seedAffiliateCode =
@@ -18,15 +18,15 @@ const seedAffiliateCode =
     await Promise.all(
       AFFILIATECODE.map(
         async (
-          affiliateCode,
+          affiliateCode
         ) => {
           await prisma.affiliateCode.create(
             {
               data: affiliateCode
-            },
+            }
           )
-        },
-      ),
+        }
+      )
     )
   }
 // const seedAffiliateCode =
@@ -53,4 +53,3 @@ const seedAffiliateCode =
 
 module.exports =
   seedAffiliateCode
-

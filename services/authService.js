@@ -20,7 +20,6 @@ class AuthService {
           const error = new Error('wrong affiliate code')
           error.name = 'BadRequest'
           throw error
-
         }
         withCode = true
       }
