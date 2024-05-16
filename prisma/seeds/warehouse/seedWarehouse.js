@@ -1,5 +1,6 @@
 const prisma = require('../../../libs/prisma')
 
+
 const WAREHOUSES = [
   {
     id: 1,
@@ -121,6 +122,7 @@ const WAREHOUSES = [
     location: '4243 Mountain Range Street',
     city_id: 20,
   },
+
 ]
 
 const seedWarehouse = async () => {
@@ -132,6 +134,7 @@ const seedWarehouse = async () => {
         create: warehouse,
       })
     }),
+
   )
 }
 

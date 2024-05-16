@@ -11,6 +11,7 @@ const CATEGORIES = [
   { id: 8, name: 'Baby Bath Accessories' },
   { id: 9, name: 'Baby Nursing Equipment' },
   { id: 10, name: 'Baby Health and Safety' },
+
 ]
 
 const seedCategories = async () => {
