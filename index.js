@@ -5,6 +5,7 @@ const dotenv = require('dotenv')
 const router = require('./router/index')
 const errorHandler = require('./middleware/errorHandler')
 dotenv.config()
+const cors = require('cors')
 
 const app = express()
 
@@ -12,6 +13,7 @@ app.use(morgan('tiny'))
 
 app.use(cookieParser())
 app.use(express.json())
+app.use(cors())
 app.use(router)
 app.use(errorHandler)
 

@@ -9,6 +9,71 @@ const prisma = require('../libs/prisma')
 const getDataUserCookie = require('../utils/cookie')
 const shippingCost = require('../utils/shippingCost')
 
+// function getUniqueCityIds(cartItems) {
+//   const uniqueCityIds = new Set()
+//   cartItems.forEach((item) => uniqueCityIds.add(item.product.warehouse.city_id))
+//   return [...uniqueCityIds]
+// }
+
+// async function createCheckoutCollection(userId) {
+//   return await prisma.checkoutCollection.create({
+//     data: { user_id: userId },
+//   })
+// }
+
+// async function createCheckouts(uniqueCityIds, cartItems, checkCollectionId) {
+//   for (const cityId of uniqueCityIds) {
+//     console.log('Creating checkout for city ID:', cityId)
+
+//     const checkout = await prisma.checkout.create({
+//       data: {
+//         checkout_collection_id: checkCollectionId,
+//         status: 'incomplete',
+//         city_id: cityId,
+//       },
+//     })
+
+//     await createCheckoutItems(cartItems, checkout.id, cityId)
+//     console.log('Finished checkout for city ID:', cityId)
+//   }
+// }
+
+// async function createCheckoutItems(cartItems, checkoutId, cityId) {
+//   for (const item of cartItems) {
+//     if (item.product.warehouse.city_id === cityId) {
+//       const {
+//         product_id,
+//         quantity,
+//         product: { price },
+//       } = item
+//       const totalSpecificPrice = price * quantity
+
+//       const checkoutItem = await prisma.checkoutItem.create({
+//         data: {
+//           checkout_id: checkoutId,
+//           product_id,
+//           quantity,
+//           total_specific_price: totalSpecificPrice,
+//         },
+//       })
+
+//       console.log('Created checkout item:', checkoutItem)
+//     }
+//   }
+// }
+
+// async function getCheckoutCollection(checkCollectionId) {
+//   return await prisma.checkoutCollection.findUnique({
+//     where: { id: checkCollectionId },
+//     include: {
+//       checkout: {
+//         include: {
+//           checkout_item: true,
+//         },
+//       },
+//     },
+//   })
+// }
 class CheckoutService {
   static async getAll () {
     try {
