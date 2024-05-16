@@ -9,7 +9,6 @@ const seedUser = require('./user/seedUser')
 const seedCart = require('./cart/seedCart')
 const seedAffiliateCode = require('./affiliateCode/seedAffiliateCode')
 
-
 async function main () {
   await seedCategories()
   await seedPromoType()
@@ -20,7 +19,6 @@ async function main () {
   await seedUser()
   await seedCart()
   await seedAffiliateCode()
-
 }
 
 main()
