@@ -41,6 +41,7 @@ const CATEGORIES = [
     // id: 10,
     name: 'Baby Health and Safety',
   },
+
 ]
 
 // const seedCategories = async () => {

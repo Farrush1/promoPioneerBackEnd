@@ -47,7 +47,6 @@ const seedUser = async () => {
     USERS.map(async (user) => {
       await prisma.user.create({
         data: user
-      })
     })
   )
 }

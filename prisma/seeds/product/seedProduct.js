@@ -15,6 +15,7 @@ const PRODUCT = [
   },
   {
     // id: 2,
+
     category_id: 1,
     warehouse_id: 2,
     name: 'Plain Baby Set',
@@ -266,6 +267,7 @@ const seedProduct = async () => {
     PRODUCT.map(async (product) => {
       await prisma.product.create({
         data: product,
+
       })
     }),
   )

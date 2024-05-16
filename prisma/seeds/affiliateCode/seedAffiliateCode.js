@@ -53,3 +53,4 @@ const seedAffiliateCode =
 
 module.exports =
   seedAffiliateCode
+
