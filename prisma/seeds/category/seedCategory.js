@@ -1,16 +1,17 @@
 const prisma = require('../../../libs/prisma')
 
 const CATEGORIES = [
-  { id: 1, name: 'Pakaian Bayi' },
-  { id: 2, name: 'Peralatan Makan Bayi' },
-  { id: 3, name: 'Popok dan Pembalut Bayi' },
-  { id: 4, name: 'Botol Susu dan Aksesoris' },
-  { id: 5, name: 'Stroller dan Kereta Dorong' },
-  { id: 6, name: 'Kamar Bayi' },
-  { id: 7, name: 'Mainan Bayi' },
-  { id: 8, name: 'Perlengkapan Mandi Bayi' },
-  { id: 9, name: 'Peralatan Penyusuan Bayi' },
-  { id: 10, name: 'Kesehatan dan Keamanan Bayi' }
+  { id: 1, name: 'Baby Clothing' },
+  { id: 2, name: 'Baby Feeding Equipment' },
+  { id: 3, name: 'Diapers and Baby Wipes' },
+  { id: 4, name: 'Baby Bottles and Accessories' },
+  { id: 5, name: 'Strollers and Pushchairs' },
+  { id: 6, name: 'Baby Room' },
+  { id: 7, name: 'Baby Toys' },
+  { id: 8, name: 'Baby Bath Accessories' },
+  { id: 9, name: 'Baby Nursing Equipment' },
+  { id: 10, name: 'Baby Health and Safety' },
+
 ]
 
 const seedCategories = async () => {

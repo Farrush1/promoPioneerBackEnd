@@ -4,6 +4,11 @@ const seedProvince = require('./province/seedProvince')
 const seedCity = require('./city/seedCity')
 const seedPromoType = require('./promoType/seedPromoType')
 const seedWarehouse = require('./warehouse/seedWarehouse')
+const seedProduct = require('./product/seedProduct')
+const seedUser = require('./user/seedUser')
+const seedCart = require('./cart/seedCart')
+const seedAffiliateCode = require('./affiliateCode/seedAffiliateCode')
+
 
 async function main () {
   await seedCategories()
@@ -11,6 +16,11 @@ async function main () {
   await seedProvince()
   await seedCity()
   await seedWarehouse()
+  await seedProduct()
+  await seedUser()
+  await seedCart()
+  await seedAffiliateCode()
+
 }
 
 main()
