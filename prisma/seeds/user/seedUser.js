@@ -13,7 +13,7 @@ const USERS = [
     gender: 'MALE',
     avatar: null,
     is_register_using_code: false,
-    is_first_transaction: false,
+    is_first_transaction: false
   },
   {
     // id: 2,
@@ -27,8 +27,8 @@ const USERS = [
     gender: 'FEMALE',
     avatar: null,
     is_register_using_code: false,
-    is_first_transaction: false,
-  },
+    is_first_transaction: false
+  }
 ]
 
 // const seedUser = async () => {
@@ -46,9 +46,9 @@ const seedUser = async () => {
   await Promise.all(
     USERS.map(async (user) => {
       await prisma.user.create({
-        data: user,
+        data: user
       })
-    }),
+    })
   )
 }
 

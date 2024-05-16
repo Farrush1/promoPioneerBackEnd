@@ -3,44 +3,44 @@ const prisma = require('../../../libs/prisma')
 const CATEGORIES = [
   {
     // id: 1,
-    name: 'Baby Clothing',
+    name: 'Baby Clothing'
   },
   {
     // id: 2,
-    name: 'Baby Feeding Equipment',
+    name: 'Baby Feeding Equipment'
   },
   {
     // id: 3,
-    name: 'Diapers and Baby Wipes',
+    name: 'Diapers and Baby Wipes'
   },
   {
     // id: 4,
-    name: 'Baby Bottles and Accessories',
+    name: 'Baby Bottles and Accessories'
   },
   {
     // id: 5,
-    name: 'Strollers and Pushchairs',
+    name: 'Strollers and Pushchairs'
   },
   {
     // id: 6,
-    name: 'Baby Room',
+    name: 'Baby Room'
   },
   {
     // id: 7,
-    name: 'Baby Toys',
+    name: 'Baby Toys'
   },
   {
     // id: 8,
-    name: 'Baby Bath Accessories',
+    name: 'Baby Bath Accessories'
   },
   {
     // id: 9,
-    name: 'Baby Nursing Equipment',
+    name: 'Baby Nursing Equipment'
   },
   {
     // id: 10,
-    name: 'Baby Health and Safety',
-  },
+    name: 'Baby Health and Safety'
+  }
 
 ]
 
@@ -65,8 +65,8 @@ const seedCategories =
               data: category
             }
           )
-        },
-      ),
+        }
+      )
     )
   }
 

@@ -11,7 +11,7 @@ const PRODUCT = [
     product_image:
       'http://res.cloudinary.com/dmvigke9d/image/upload/v1715843457/gvjzgghwtccjqv3xmluq.jpg',
     stock: 50,
-    weight: 150,
+    weight: 150
   },
   {
     // id: 2,
@@ -24,7 +24,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715843552/zhrlt1pqjfanqwbyqktq.jpg',
     stock: 70,
-    weight: 120,
+    weight: 120
   },
 
   {
@@ -37,7 +37,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715843615/vas1ak4qf4rwm2yvr5gd.jpg',
     stock: 100,
-    weight: 50,
+    weight: 50
   },
   {
     // id: 4,
@@ -49,7 +49,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715843655/y3ygtxb3ncriqvxkhj4i.jpg',
     stock: 80,
-    weight: 70,
+    weight: 70
   },
 
   {
@@ -62,7 +62,7 @@ const PRODUCT = [
     product_image:
       'http://res.cloudinary.com/dmvigke9d/image/upload/v1715843693/fhggv1ebfhvekljvnoko.jpg',
     stock: 120,
-    weight: 100,
+    weight: 100
   },
   {
     // id: 6,
@@ -74,7 +74,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715843693/fhggv1ebfhvekljvnoko.jpg',
     stock: 90,
-    weight: 80,
+    weight: 80
   },
 
   {
@@ -87,7 +87,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715843953/rxchu7fcki8ueqecpza4.jpg',
     stock: 60,
-    weight: 70,
+    weight: 70
   },
   {
     // id: 8,
@@ -99,7 +99,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715844007/oufqpjc5iqalmscguhej.jpg',
     stock: 40,
-    weight: 150,
+    weight: 150
   },
 
   {
@@ -112,7 +112,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715844029/b0xahygld3jc31faee5o.jpg',
     stock: 30,
-    weight: 500,
+    weight: 500
   },
   {
     // id: 10,
@@ -124,7 +124,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715844094/xcuyo4bqgkstxj5twihj.jpg',
     stock: 20,
-    weight: 800,
+    weight: 800
   },
 
   {
@@ -137,7 +137,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715844164/rffcmdcmnimkuckbibag.jpg',
     stock: 25,
-    weight: 1000,
+    weight: 1000
   },
   {
     // id: 12,
@@ -149,7 +149,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715844188/z4gdvgvno8ee5nscjeuj.jpg',
     stock: 35,
-    weight: 300,
+    weight: 300
   },
 
   {
@@ -162,7 +162,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715844213/eftwb69uf09oj9qxwgns.jpg',
     stock: 45,
-    weight: 200,
+    weight: 200
   },
   {
     // id: 14,
@@ -174,7 +174,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715844236/nurx4jmpcmbrtrzjnonl.jpg',
     stock: 55,
-    weight: 150,
+    weight: 150
   },
 
   {
@@ -187,7 +187,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715844260/ml92hnt6dpqp5cg2i9l6.jpg',
     stock: 40,
-    weight: 600,
+    weight: 600
   },
   {
     // id: 16,
@@ -199,7 +199,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715844291/vn0ht7jpl7evy7ith7kk.jpg',
     stock: 65,
-    weight: 200,
+    weight: 200
   },
   {
     // id: 17,
@@ -211,7 +211,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715844324/eunyci7lqs0etff58sth.jpg',
     stock: 25,
-    weight: 600,
+    weight: 600
   },
   {
     // id: 18,
@@ -223,7 +223,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715844350/xuqb8t2i0hympojpu4jz.jpg',
     stock: 35,
-    weight: 300,
+    weight: 300
   },
   {
     // id: 19,
@@ -235,7 +235,7 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715844371/cuvjit3zvqzly6o3wbbx.jpg',
     stock: 20,
-    weight: 400,
+    weight: 400
   },
   {
     // id: 20,
@@ -247,8 +247,8 @@ const PRODUCT = [
     product_image:
       'https://res.cloudinary.com/dmvigke9d/image/upload/v1715844391/qitbsha3imprw0qb6f1v.jpg',
     stock: 30,
-    weight: 800,
-  },
+    weight: 800
+  }
 ]
 
 // const seedProduct = async () => {
@@ -266,10 +266,10 @@ const seedProduct = async () => {
   await Promise.all(
     PRODUCT.map(async (product) => {
       await prisma.product.create({
-        data: product,
+        data: product
 
       })
-    }),
+    })
   )
 }
 
