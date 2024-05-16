@@ -46,8 +46,9 @@ const seedUser = async () => {
   await Promise.all(
     USERS.map(async (user) => {
       await prisma.user.create({
-        data: user
-    })
+        data: user,
+      })
+    }),
   )
 }
 
