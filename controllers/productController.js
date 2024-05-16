@@ -70,8 +70,8 @@ class ProductController {
       res.status(200).json({
         success: true,
         message: 'Uploaded!',
+        url: result.secure_url,
 
-        url: result.url
       })
     } catch (error) {
       console.error(error)
