@@ -71,7 +71,7 @@ class ProductController {
         success: true,
         message: 'Uploaded!',
 
-        url: result.url
+        url: result.secure_url,
       })
     } catch (error) {
       console.error(error)

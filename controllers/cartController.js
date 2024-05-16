@@ -3,7 +3,7 @@ const CartService = require('../services/cartService')
 class CartController {
   static async getAll (req, res, next) {
     try {
-      const carts = await CartService.getAll()
+      const carts = await CartService.getAll(req.cookies)
       res.status(200).json(carts)
     } catch (error) {
       next(error)
