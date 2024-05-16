@@ -2,7 +2,7 @@ const prisma = require('../../../libs/prisma')
 
 const USERS = [
   {
-    id: 1,
+    // id: 1,
     name: 'John Doe',
     email: 'johndoe@example.com',
     password: '$2b$10$Nxuq4LsyLr8Vx445B5ZsxeFv7TDN0gFp37w0Rc6TlEutCXzhN8rZ2', // password 12345678
@@ -16,7 +16,7 @@ const USERS = [
     is_first_transaction: false,
   },
   {
-    id: 2,
+    // id: 2,
     name: 'Admin',
     email: 'admin@gmail.com',
     password: '$2b$10$Nxuq4LsyLr8Vx445B5ZsxeFv7TDN0gFp37w0Rc6TlEutCXzhN8rZ2', // password 12345678
@@ -31,13 +31,22 @@ const USERS = [
   },
 ]
 
+// const seedUser = async () => {
+//   await Promise.all(
+//     USERS.map(async (user) => {
+//       await prisma.user.upsert({
+//         where: { id: user.id },
+//         update: {},
+//         create: user
+//       })
+//     })
+//   )
+// }
 const seedUser = async () => {
   await Promise.all(
     USERS.map(async (user) => {
-      await prisma.user.upsert({
-        where: { id: user.id },
-        update: {},
-        create: user
+      await prisma.user.create({
+        data: user
       })
     })
   )
