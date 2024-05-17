@@ -92,7 +92,7 @@ class AuthService {
         secure: true,
       })
 
-      return { message: 'success login' }
+      return { message: 'success login', role: user.role }
     } catch (error) {
       console.log(error)
       throw error
