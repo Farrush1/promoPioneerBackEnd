@@ -1,9 +1,9 @@
 const prisma = require('../libs/prisma')
 const cloudinaryUpload = require('../libs/cloudinary')
 class ProductService {
-  static async getAllProducts (params) {
+  static async getAllProducts(params) {
     try {
-      let { page, limit } = params
+      let { page, limit, categories, search, minPrice, maxPrice, cities } = params
       page = parseInt(page) || 1
       limit = parseInt(limit) || 10
 
@@ -13,14 +13,80 @@ class ProductService {
         throw error
       }
 
+      const filterOptions = {}
+
+      let price = {}
+      let minPrices = {}
+      let maxPrices = {}
+
+      if (minPrice) {
+        minPrices = { gt: +minPrice }
+      }
+      if (maxPrice) {
+        maxPrices = { lt: +maxPrice }
+      }
+
+      if (minPrice || maxPrice) {
+        price = {
+          price: {
+            ...minPrices,
+            ...maxPrices,
+          },
+        }
+      }
+
+      let searchFilter = {}
+
+      if (search) {
+        searchFilter = {
+          name: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        }
+      }
+
+      let categoryFilter = {}
+
+      if (categories) {
+        categoryFilter = {
+          category: {
+            id: +categories,
+          },
+        }
+      }
+      let cityFilter = {}
+
+      if (cities) {
+        cityFilter = {
+          warehouse: {
+            city_id: +cities,
+          },
+        }
+      }
+
+      filterOptions.where = {
+        ...categoryFilter,
+        ...searchFilter,
+        ...price,
+        ...cityFilter,
+      }
+
       const startIndex = (page - 1) * limit
 
-      const products = await prisma.product.findMany({
-        skip: startIndex,
-        take: limit
-      })
+      filterOptions.take = limit
+      filterOptions.skip = startIndex
 
-      const totalProducts = await prisma.product.count()
+      const products = await prisma.product.findMany({
+        ...filterOptions,
+        include: {
+          warehouse: true,
+        },
+      })
+      
+      const totalProducts = await prisma.product.count({
+        where: filterOptions.where,
+      })
 
       const totalPages = Math.ceil(totalProducts / limit)
       return { currentPage: page, totalPages, totalProducts, products }
@@ -30,12 +96,12 @@ class ProductService {
     }
   }
 
-  static async getProductById (productId) {
+  static async getProductById(productId) {
     try {
       const result = await prisma.product.findUnique({
         where: {
-          id: +productId
-        }
+          id: +productId,
+        },
       })
       return result
     } catch (error) {
@@ -44,7 +110,7 @@ class ProductService {
     }
   }
 
-  static async updateProduct (productId, params, res) {
+  static async updateProduct(productId, params, res) {
     try {
       const { body, file } = params
       const {
@@ -56,7 +122,7 @@ class ProductService {
         description,
         price,
         stock,
-        weight
+        weight,
       } = body || {}
       const object = {}
       if (categoryId) object.category_id = +categoryId
@@ -76,9 +142,9 @@ class ProductService {
       }
       const result = await prisma.product.update({
         where: {
-          id: +productId
+          id: +productId,
         },
-        data: object
+        data: object,
       })
       res.status(200).json({ result, productImage })
     } catch (error) {
@@ -87,12 +153,12 @@ class ProductService {
     }
   }
 
-  static async deleteProduct (productId) {
+  static async deleteProduct(productId) {
     try {
       const result = await prisma.product.delete({
         where: {
-          id: +productId
-        }
+          id: +productId,
+        },
       })
       return result
     } catch (error) {
@@ -101,7 +167,7 @@ class ProductService {
     }
   }
 
-  static async store (params) {
+  static async store(params) {
     try {
       const { body, file } = params
       const {
@@ -113,7 +179,7 @@ class ProductService {
         description,
         price,
         stock,
-        weight
+        weight,
       } = body
       if (!file) {
         const error = new Error('Insert photo product')
@@ -136,25 +202,25 @@ class ProductService {
               location: warehouseFullAddress,
               city: {
                 connect: {
-                  id: +warehouseCityId
-                }
-              }
-            }
+                  id: +warehouseCityId,
+                },
+              },
+            },
           },
           category: {
             connect: {
-              id: +categoryId
-            }
-          }
+              id: +categoryId,
+            },
+          },
         },
         include: {
           warehouse: {
             include: {
-              city: true
-            }
+              city: true,
+            },
           },
-          category: true
-        }
+          category: true,
+        },
       })
       return { result }
     } catch (error) {
