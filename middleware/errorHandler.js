@@ -12,7 +12,7 @@ const errorHandler = (err, req, res, next) => {
     return res.status(409).json({ message: 'Already Exist!' })
   }
 
-  return res.status(500).json({ message: 'Internal Server Error' })
+  return res.status(500).json({ message: 'Internal Server Error', err })
 }
 
 module.exports = errorHandler

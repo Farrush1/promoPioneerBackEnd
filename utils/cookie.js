@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken')
 
-function getDataUserCookie (cookie) {
-  const token = cookie.accessToken
+function getDataUserCookie(cookie, headers) {
+  const token = cookie.accessToken || headers['authorization'].split(' ')[1]
+  console.log(headers)
+
   if (!token) {
     const error = new Error('Invalid Credential')
     error.name = 'InvalidCredential'

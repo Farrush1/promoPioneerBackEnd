@@ -82,7 +82,7 @@ class AuthService {
         secure: true
       })
 
-      return { message: 'success login' }
+      return { message: 'success login', token }
     } catch (error) {
       console.log(error)
       throw error

@@ -3,8 +3,9 @@ const jwt = require('jsonwebtoken')
 class AuthMiddleware {
   static async authenticate (req, res, next) {
     try {
-      const token = req.cookies.accessToken
-
+      const token = req.cookies.accessToken || req.headers['Authorization']
+      console.log(req.cookies)
+      console.log(req.headers)
       if (!token) {
         return res.status(401).json({ error: 'Unauthorized: Token not provided' })
       }
