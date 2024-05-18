@@ -4,6 +4,7 @@ class ProductService {
   static async getAllProducts(params) {
     try {
       let { page, limit, categories, search, minPrice, maxPrice, cities, specialPromo } = params
+
       page = parseInt(page) || 1
       limit = parseInt(limit) || 10
 
@@ -13,6 +14,7 @@ class ProductService {
         throw error
       }
 
+// fix this
       // const filterOptions = {}
 
       // let price = {}
@@ -101,6 +103,82 @@ class ProductService {
       })
 
       return { products }
+// fix this
+      const filterOptions = {}
+
+      let price = {}
+      let minPrices = {}
+      let maxPrices = {}
+
+      if (minPrice) {
+        minPrices = { gt: +minPrice }
+      }
+      if (maxPrice) {
+        maxPrices = { lt: +maxPrice }
+      }
+
+      if (minPrice || maxPrice) {
+        price = {
+          price: {
+            ...minPrices,
+            ...maxPrices,
+          },
+        }
+      }
+
+      let searchFilter = {}
+
+      if (search) {
+        searchFilter = {
+          name: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        }
+      }
+
+      let categoryFilter = {}
+
+      if (categories) {
+        categoryFilter = {
+          category: {
+            id: +categories,
+          },
+        }
+      }
+      let cityFilter = {}
+
+      if (cities) {
+        cityFilter = {
+          warehouse: {
+            city_id: +cities,
+          },
+        }
+      }
+
+      filterOptions.where = {
+        ...categoryFilter,
+        ...searchFilter,
+        ...price,
+        ...cityFilter,
+      }
+
+      const startIndex = (page - 1) * limit
+
+      filterOptions.take = limit
+      filterOptions.skip = startIndex
+
+      const products = await prisma.product.findMany({
+        ...filterOptions,
+        include: {
+          warehouse: true,
+        },
+      })
+      
+      const totalProducts = await prisma.product.count({
+        where: filterOptions.where,
+      })
+
 
       // const totalProducts = await prisma.product.count({
       //   where: filterOptions.where,

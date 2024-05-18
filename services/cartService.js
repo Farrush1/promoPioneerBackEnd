@@ -69,7 +69,6 @@ class CartService {
   static async destroy (params) {
     try {
       const { cookie, itemId } = params
-      console.log(itemId, "-----------------" )
       const user = getDataUserCookie(cookie)
       const { id } = user
       const cart = await prisma.cart.findUnique({
