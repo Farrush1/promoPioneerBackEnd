@@ -3,7 +3,7 @@ const cloudinaryUpload = require('../libs/cloudinary')
 class ProductService {
   static async getAllProducts(params) {
     try {
-      let { page, limit, categories, search, minPrice, maxPrice, cities } = params
+      let { page, limit, categories, search, minPrice, maxPrice, cities, specialPromo } = params
       page = parseInt(page) || 1
       limit = parseInt(limit) || 10
 
@@ -13,83 +13,101 @@ class ProductService {
         throw error
       }
 
-      const filterOptions = {}
+      // const filterOptions = {}
 
-      let price = {}
-      let minPrices = {}
-      let maxPrices = {}
+      // let price = {}
+      // let minPrices = {}
+      // let maxPrices = {}
 
-      if (minPrice) {
-        minPrices = { gt: +minPrice }
-      }
-      if (maxPrice) {
-        maxPrices = { lt: +maxPrice }
-      }
+      // if (minPrice) {
+      //   minPrices = { gt: +minPrice }
+      // }
+      // if (maxPrice) {
+      //   maxPrices = { lt: +maxPrice }
+      // }
 
-      if (minPrice || maxPrice) {
-        price = {
-          price: {
-            ...minPrices,
-            ...maxPrices,
-          },
-        }
-      }
+      // if (minPrice || maxPrice) {
+      //   price = {
+      //     price: {
+      //       ...minPrices,
+      //       ...maxPrices,
+      //     },
+      //   }
+      // }
 
-      let searchFilter = {}
+      // let searchFilter = {}
 
-      if (search) {
-        searchFilter = {
-          name: {
-            contains: search,
-            mode: 'insensitive',
-          },
-        }
-      }
+      // if (search) {
+      //   searchFilter = {
+      //     name: {
+      //       contains: search,
+      //       mode: 'insensitive',
+      //     },
+      //   }
+      // }
 
-      let categoryFilter = {}
+      // let categoryFilter = {}
 
-      if (categories) {
-        categoryFilter = {
-          category: {
-            id: +categories,
-          },
-        }
-      }
-      let cityFilter = {}
+      // if (categories) {
+      //   categoryFilter = {
+      //     category: {
+      //       id: +categories,
+      //     },
+      //   }
+      // }
+      // let cityFilter = {}
 
-      if (cities) {
-        cityFilter = {
-          warehouse: {
-            city_id: +cities,
-          },
-        }
-      }
+      // if (cities) {
+      //   cityFilter = {
+      //     warehouse: {
+      //       city_id: +cities,
+      //     },
+      //   }
+      // }
 
-      filterOptions.where = {
-        ...categoryFilter,
-        ...searchFilter,
-        ...price,
-        ...cityFilter,
-      }
+      // filterOptions.where = {
+      //   ...categoryFilter,
+      //   ...searchFilter,
+      //   ...price,
+      //   ...cityFilter,
+      // }
 
-      const startIndex = (page - 1) * limit
+      // const startIndex = (page - 1) * limit
 
-      filterOptions.take = limit
-      filterOptions.skip = startIndex
+      // filterOptions.take = limit
+      // filterOptions.skip = startIndex
 
+      // const products = await prisma.product.findMany({
+      //   ...filterOptions,
+      //   include: {
+      //     warehouse: true,
+      //   },
+      // })
       const products = await prisma.product.findMany({
-        ...filterOptions,
+        where: {
+          PromoProduct: {
+            some: {
+              promo: {
+                PromoType: {
+                  name: 'SPECIFIC_PRODUCT',
+                },
+              },
+            },
+          },
+        },
         include: {
-          warehouse: true,
+          PromoProduct: true
         },
       })
-      
-      const totalProducts = await prisma.product.count({
-        where: filterOptions.where,
-      })
 
-      const totalPages = Math.ceil(totalProducts / limit)
-      return { currentPage: page, totalPages, totalProducts, products }
+      return { products }
+
+      // const totalProducts = await prisma.product.count({
+      //   where: filterOptions.where,
+      // })
+
+      // const totalPages = Math.ceil(totalProducts / limit)
+      // return { currentPage: page, totalPages, totalProducts, products }
     } catch (error) {
       console.log(error)
       throw error

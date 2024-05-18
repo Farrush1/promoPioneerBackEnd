@@ -89,7 +89,7 @@ class AuthService {
       res.cookie('accessToken', token, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000, // 1 day
-        secure: true,
+        // secure: true,
       })
 
       return { message: 'success login', role: user.role }
