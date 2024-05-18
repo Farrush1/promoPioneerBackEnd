@@ -3,12 +3,12 @@ const prisma = require('../../../libs/prisma')
 const CART = [
   {
     // id: 1,
-    user_id: 1,
+    user_id: 1
   },
   {
     // id: 2,
-    user_id: 2,
-  },
+    user_id: 2
+  }
 ]
 
 // const seedCart = async () => {
@@ -31,10 +31,10 @@ const seedCart = async () => {
     CART.map(async (cart) => {
       await prisma.cart.create(
         {
-         data: cart
-        },
+          data: cart
+        }
       )
-    }),
+    })
   )
 }
 

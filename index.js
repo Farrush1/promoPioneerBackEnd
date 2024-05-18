@@ -11,9 +11,9 @@ const app = express()
 
 app.use(morgan('tiny'))
 
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
 app.use(cookieParser())
 app.use(express.json())
-app.use(cors())
 app.use(router)
 app.use(errorHandler)
 

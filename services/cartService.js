@@ -5,22 +5,22 @@ class CartService {
   static async getAll (params) {
     try {
       const user = getDataUserCookie(params)
-      const {id} = user
+      const { id } = user
       const carts = await prisma.cart.findUnique({
         where: {
-          user_id: id,
+          user_id: id
         },
         include: {
           cartItem: {
             include: {
               product: {
                 include: {
-                  warehouse: true,
-                },
-              },
-            },
-          },
-        },
+                  warehouse: true
+                }
+              }
+            }
+          }
+        }
       })
       return { carts }
     } catch (error) {

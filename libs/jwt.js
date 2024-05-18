@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 dotenv.config()
 
-const sign = (dataObj) => {
+const sign = (dataObj, expireTime = '1d') => {
   return jwt.sign(dataObj, process.env.JWT_AUTH_SECRET, {
-    expiresIn: '1d'
+    expiresIn: expireTime
   })
 }
 
