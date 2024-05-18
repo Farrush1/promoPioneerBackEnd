@@ -30,12 +30,16 @@ class ProductController {
 
   static async updateProduct (req, res, next) {
     try {
+      const params = {
+        id: req.params.id,
+        body: req.body,
+        file: req.file
+      }
       const productId = req.params.id
-      const product = await ProductService.updateProduct(productId, req.body)
+      const product = await ProductService.updateProduct(params)
       res.status(200).json(product)
     } catch (error) {
       next(error)
-      res.status(500).json({ message: error.message })
     }
   }
 

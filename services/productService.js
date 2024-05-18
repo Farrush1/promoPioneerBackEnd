@@ -14,79 +14,11 @@ class ProductService {
         throw error
       }
 
-// fix this
-      // const filterOptions = {}
+      const filterOptions = {}
 
-      // let price = {}
-      // let minPrices = {}
-      // let maxPrices = {}
-
-      // if (minPrice) {
-      //   minPrices = { gt: +minPrice }
-      // }
-      // if (maxPrice) {
-      //   maxPrices = { lt: +maxPrice }
-      // }
-
-      // if (minPrice || maxPrice) {
-      //   price = {
-      //     price: {
-      //       ...minPrices,
-      //       ...maxPrices,
-      //     },
-      //   }
-      // }
-
-      // let searchFilter = {}
-
-      // if (search) {
-      //   searchFilter = {
-      //     name: {
-      //       contains: search,
-      //       mode: 'insensitive',
-      //     },
-      //   }
-      // }
-
-      // let categoryFilter = {}
-
-      // if (categories) {
-      //   categoryFilter = {
-      //     category: {
-      //       id: +categories,
-      //     },
-      //   }
-      // }
-      // let cityFilter = {}
-
-      // if (cities) {
-      //   cityFilter = {
-      //     warehouse: {
-      //       city_id: +cities,
-      //     },
-      //   }
-      // }
-
-      // filterOptions.where = {
-      //   ...categoryFilter,
-      //   ...searchFilter,
-      //   ...price,
-      //   ...cityFilter,
-      // }
-
-      // const startIndex = (page - 1) * limit
-
-      // filterOptions.take = limit
-      // filterOptions.skip = startIndex
-
-      // const products = await prisma.product.findMany({
-      //   ...filterOptions,
-      //   include: {
-      //     warehouse: true,
-      //   },
-      // })
-      const products = await prisma.product.findMany({
-        where: {
+      let promoFilter = {}
+      if (specialPromo === 'true' || specialPromo === true) {
+        promoFilter = {
           PromoProduct: {
             some: {
               promo: {
@@ -96,15 +28,8 @@ class ProductService {
               },
             },
           },
-        },
-        include: {
-          PromoProduct: true
-        },
-      })
-
-      return { products }
-// fix this
-      const filterOptions = {}
+        }
+      }
 
       let price = {}
       let minPrices = {}
@@ -161,6 +86,7 @@ class ProductService {
         ...searchFilter,
         ...price,
         ...cityFilter,
+        ...promoFilter,
       }
 
       const startIndex = (page - 1) * limit
@@ -174,18 +100,13 @@ class ProductService {
           warehouse: true,
         },
       })
-      
+
       const totalProducts = await prisma.product.count({
         where: filterOptions.where,
       })
 
-
-      // const totalProducts = await prisma.product.count({
-      //   where: filterOptions.where,
-      // })
-
-      // const totalPages = Math.ceil(totalProducts / limit)
-      // return { currentPage: page, totalPages, totalProducts, products }
+      const totalPages = Math.ceil(totalProducts / limit)
+      return { currentPage: page, totalPages, totalProducts, products }
     } catch (error) {
       console.log(error)
       throw error
@@ -206,9 +127,9 @@ class ProductService {
     }
   }
 
-  static async updateProduct(productId, params, res) {
+  static async updateProduct(params) {
     try {
-      const { body, file } = params
+      const { body, file, id } = params
       const {
         categoryId,
         warehouseName,
@@ -219,7 +140,7 @@ class ProductService {
         price,
         stock,
         weight,
-      } = body || {}
+      } = body 
       const object = {}
       if (categoryId) object.category_id = +categoryId
       if (warehouseName) object.warehouse_name = warehouseName
@@ -232,20 +153,23 @@ class ProductService {
       if (weight) object.weight = +weight
 
       let productImage = null
-      if (file) {
-        productImage = await cloudinaryUpload(file.path)
-        object.product_image = productImage.url
+      if (!file) {
+        const error = new Error('please input new photo product')
+        error.name = 'BadRequest'
+        throw error
       }
+      productImage = await cloudinaryUpload(file.path)
+      object.product_image = productImage.url
       const result = await prisma.product.update({
         where: {
-          id: +productId,
+          id: +id,
         },
         data: object,
       })
-      res.status(200).json({ result, productImage })
+      return { result }
     } catch (error) {
       console.log(error)
-      res.status(500).json({ message: error.message })
+      throw error
     }
   }
 
