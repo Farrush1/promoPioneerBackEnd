@@ -8,8 +8,9 @@ class UserService {
       const users = await prisma.user.findMany({
         include: {
           Cart: true,
-          affiliate_code: true
-        }
+          affiliate_code: true,
+          UserCity:true
+        },
       })
       return { users }
     } catch (error) {
@@ -39,6 +40,9 @@ class UserService {
       const users = await prisma.user.findUnique({
         where: {
           id
+        },
+        include:{
+          affiliate_code: true
         }
       })
       return { users }

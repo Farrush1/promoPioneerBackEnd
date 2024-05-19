@@ -15,7 +15,7 @@ class CheckoutController {
     try {
       const params = {
         checkoutColectionId: req.params.id,
-        cookie: req.cookies
+        user: req.user
       }
       const checkouts = await CheckoutService.getById(params)
       res.status(200).json(checkouts)

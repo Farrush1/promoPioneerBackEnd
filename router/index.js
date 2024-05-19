@@ -13,6 +13,7 @@ const paymentRoute = require('./payment/index')
 const cityRoute = require('./city/index')
 const provinceRoute = require('./province/index')
 const wareHouseRoute = require('./warehouse/index')
+const anonimusRoute = require('./anonym/index')
 
 router.get('/api/hello', function (req, res) {
   res.status(200).json({ message: 'hello world' })
@@ -31,5 +32,6 @@ router.use('/api/payments', paymentRoute)
 router.use('/api/cities', cityRoute)
 router.use('/api/provinces', provinceRoute)
 router.use('/api/warehouses', wareHouseRoute)
+router.use('/api/anonimus', anonimusRoute)
 
 module.exports = router
