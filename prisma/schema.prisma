@@ -48,17 +48,18 @@ model Province {
 }
 
 model Promo {
-  id               Int                @id @default(autoincrement())
-  name             String             @unique
-  discount_percent Int
-  quantity         Int
-  isLimited        Boolean
-  start_date       DateTime
-  end_date         DateTime
-  promo_type_id    Int
-  PromoType        PromoType          @relation(fields: [promo_type_id], references: [id])
-  promoProduct     PromoProduct[]
-  checkoutDiscount CheckoutDiscount[]
+  id                Int                @id @default(autoincrement())
+  name              String             @unique
+  discount_percent  Int
+  quantity          Int
+  isLimitedQuantity Boolean
+  isLimitedTime     Boolean
+  start_date        DateTime
+  end_date          DateTime
+  promo_type_id     Int
+  PromoType         PromoType          @relation(fields: [promo_type_id], references: [id])
+  promoProduct      PromoProduct[]
+  checkoutDiscount  CheckoutDiscount[]
 }
 
 model WareHouse {
@@ -71,13 +72,13 @@ model WareHouse {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  name     String
-  email    String @unique
-  password String
-  role     Role   @default(USER)
-  UserCity City?  @relation(fields: [city_id], references: [id])
-
+  id                     Int                  @id @default(autoincrement())
+  name                   String
+  email                  String               @unique
+  password               String
+  role                   Role                 @default(USER)
+  UserCity               City?                @relation(fields: [city_id], references: [id])
+  phone_number           String?
   city_id                Int?
   full_address           String?
   age                    Int?
@@ -152,6 +153,8 @@ model CheckoutCollection {
   total_shipping_price Int?
   total_price          Int?
   user_id              Int
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
   user                 User               @relation(fields: [user_id], references: [id])
   payment              Payment?
   checkout             Checkout[]
@@ -163,15 +166,23 @@ model Checkout {
   checkout_collection_id Int
   total_checkout_price   Int?
   subtotal_price         Int?
-  shipping_name          String?
-  shipping_service       String?
-  shipping_price         Int?
   status                 String
   total_weight           Int?
   city_id                Int
   city                   City               @relation(fields: [city_id], references: [id])
   checkout_collection    CheckoutCollection @relation(fields: [checkout_collection_id], references: [id])
   checkout_item          CheckoutItem[]
+  shippingCheckout       shippingCheckout?
+}
+
+model shippingCheckout {
+  id          Int      @id @default(autoincrement())
+  name        String?
+  service     String?
+  price       Int?
+  checkout_id Int      @unique
+  checkout    Checkout @relation(fields: [checkout_id], references: [id])
+
 }
 
 model CheckoutItem {

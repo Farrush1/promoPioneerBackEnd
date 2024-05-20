@@ -8,10 +8,12 @@ const seedProduct = require('./product/seedProduct')
 const seedUser = require('./user/seedUser')
 const seedCart = require('./cart/seedCart')
 const seedAffiliateCode = require('./affiliateCode/seedAffiliateCode')
+const seedPromo = require('./promo/seedPromo')
 
 async function main () {
   await seedCategories()
   await seedPromoType()
+  await seedPromo()
   await seedProvince()
   await seedCity()
   await seedWarehouse()
