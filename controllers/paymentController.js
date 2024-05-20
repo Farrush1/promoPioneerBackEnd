@@ -29,6 +29,19 @@ class PaymentController {
     }
   }
 
+  static async changeStatus(req, res, next) {
+    try {
+      const params = {
+        paymentId: req.params.id,
+        body: req.body
+      }
+      const payment = await PaymentService.changeStatus(params)
+      res.status(200).json(payment)
+    } catch (error) {
+      next(error)
+    }
+  }
+
   static async uploadProof(req, res, next) {
     try {
       const params = {

@@ -3,23 +3,27 @@ const {
   createCheckoutCollection,
   createCheckouts,
   getCheckoutCollection,
-  updateCheckouts
+  updateCheckouts,
+  shippingOption,
+  // firstShip,
 } = require('../helpers/checkoutHelpers')
 const prisma = require('../libs/prisma')
 const getDataUserCookie = require('../utils/cookie')
-const shippingCost = require('../utils/shippingCost')
+// const shippingCost = require('../utils/shippingCost')
 
 class CheckoutService {
-  static async getAll () {
+  static async getAll() {
     try {
       const checkout = await prisma.checkoutCollection.findMany({
         include: {
+          CheckoutDiscount: true,
           checkout: {
             include: {
-              checkout_item: true
-            }
-          }
-        }
+              checkout_item: true,
+              shippingCheckout: true,
+            },
+          },
+        },
       })
       return { checkout }
     } catch (error) {
@@ -28,13 +32,13 @@ class CheckoutService {
     }
   }
 
-  static async getById (params) {
+  static async getById(params) {
     const { checkoutColectionId, user } = params
     const { id } = user
     const userData = await prisma.user.findUnique({
       where: {
-        id
-      }
+        id,
+      },
     })
     const userCity = userData.city_id
     if (!userCity) {
@@ -45,60 +49,69 @@ class CheckoutService {
     try {
       const checkoutColection = await prisma.checkoutCollection.findUnique({
         where: {
-          id: +checkoutColectionId
+          id: +checkoutColectionId,
         },
         include: {
           CheckoutDiscount: true,
           checkout: {
             include: {
-              checkout_item: true
-            }
-          }
-        }
+              checkout_item: true,
+              shippingCheckout: true,
+            },
+          },
+        },
       })
-      // const checkouts = checkoutColection.checkout
+
+      await updateCheckouts(checkoutColection, userCity)
+
       for (const checkout of checkoutColection.checkout) {
         console.log(checkout)
-        const shippingJNE = await shippingCost(
-          checkout.city_id,
-          userCity,
-          checkout.total_weight,
-          'jne'
-        )
-        const shippingTIKI = await shippingCost(
-          checkout.city_id,
-          userCity,
-          checkout.total_weight,
-          'tiki'
-        )
-        const shippingPOS = await shippingCost(
-          checkout.city_id,
-          userCity,
-          checkout.total_weight,
-          'pos'
-        )
-        checkout.shipping_option = [shippingJNE[0], shippingTIKI[0], shippingPOS[0]]
+        const shipping = await shippingOption(checkout.city_id, userCity, checkout.total_weight)
+        checkout.shipping_option = shipping.shippOption
       }
-      return { checkoutColection }
+      
+      const getCheckCollection = await getCheckoutCollection(checkoutColection.id)
+      
+      let totalItemPrice = 0
+      let totalShippingPrice = 0
+      getCheckCollection.checkout.forEach((element) => {
+        totalItemPrice += element.subtotal_price
+        totalShippingPrice += element.shippingCheckout.price
+      })
+      getCheckCollection.CheckoutDiscount.forEach((element) =>{
+        totalItemPrice -= element.discount_price
+      })
+      const totalPrice = totalItemPrice + totalShippingPrice
+
+      await prisma.checkoutCollection.update({
+        where: { id: getCheckCollection.id },
+        data: {
+          total_price: totalPrice,
+          total_item_price: totalItemPrice,
+          total_shipping_price: totalShippingPrice,
+        },
+      })
+      const secondCheckCollection = await getCheckoutCollection(checkoutColection.id)
+      return { getCheckCollection: secondCheckCollection }
     } catch (error) {
       console.log(error)
       throw error
     }
   }
 
-  static async storeProduct (params) {
+  static async storeProduct(params) {
     try {
       const { body, cookie, productId } = params
       const { quantity } = body
       const { id } = getDataUserCookie(cookie)
       const user = await prisma.user.findUnique({
-        where: { id }
+        where: { id },
       })
       const product = await prisma.product.findUnique({
         where: { id: +productId },
         include: {
-          warehouse: true
-        }
+          warehouse: true,
+        },
       })
       if (!user.full_address || !user.city_id) {
         const error = new Error('user address and city required')
@@ -122,12 +135,12 @@ class CheckoutService {
                   product_id: +productId,
                   quantity,
                   total_specific_price: totalPrice,
-                  weight: totalWeight
-                }
-              }
-            }
-          }
-        }
+                  weight: totalWeight,
+                },
+              },
+            },
+          },
+        },
       })
       return { checkoutColection }
     } catch (error) {
@@ -136,7 +149,7 @@ class CheckoutService {
     }
   }
 
-  static async storeCart (params) {
+  static async storeCart(params) {
     try {
       const { cookie } = params
       const { id } = getDataUserCookie(cookie)
@@ -153,12 +166,12 @@ class CheckoutService {
             include: {
               product: {
                 include: {
-                  warehouse: true
-                }
-              }
-            }
-          }
-        }
+                  warehouse: true,
+                },
+              },
+            },
+          },
+        },
       })
 
       if (!cart) {
@@ -175,8 +188,10 @@ class CheckoutService {
 
       const newCheckColection = await getCheckoutCollection(checkColection.id)
 
+      
+
       // new code
-      await updateCheckouts(newCheckColection)
+      await updateCheckouts(newCheckColection, user.city_id)
 
       const upCheckColection = await getCheckoutCollection(checkColection.id)
       let totalItemPrice = 0
@@ -184,11 +199,27 @@ class CheckoutService {
         totalItemPrice += element.subtotal_price
       })
 
+      let discount = 0
+
+      if (user.is_register_using_code && !user.is_first_transaction) {
+        console.log("first")
+        discount = 50 * totalItemPrice / 100
+        await prisma.checkoutDiscount.create({
+          data: {
+            checkout_colection_id: checkColection.id,
+            promo_id: 1,
+            discount_percent: 50,
+            discount_price: discount,
+          },
+        })
+      }
+
+      totalItemPrice -= discount
       await prisma.checkoutCollection.update({
         where: { id: checkColection.id },
         data: {
-          total_item_price: totalItemPrice
-        }
+          total_item_price: totalItemPrice,
+        },
       })
       const lasCheckColection = await getCheckoutCollection(checkColection.id)
 
@@ -199,25 +230,25 @@ class CheckoutService {
     }
   }
 
-  static async promoCheckout (params) {
+  static async promoCheckout(params) {
     try {
       const { body, checkoutColectionId } = params
       const { codeVoucher } = body
       const checkoutColection = await prisma.checkoutCollection.findUnique({
         where: {
-          id: +checkoutColectionId
+          id: +checkoutColectionId,
         },
         include: {
-          checkout: true
-        }
+          checkout: true,
+        },
       })
       const promo = await prisma.promo.findUnique({
         where: {
-          name: codeVoucher
+          name: codeVoucher,
         },
         include: {
-          PromoType: true
-        }
+          PromoType: true,
+        },
       })
       if (!promo) {
         const error = new Error('voucher promo not found')
@@ -235,32 +266,32 @@ class CheckoutService {
             discount_price: discountPrice,
             discount_percent: promo.discount_percent,
             checkout_collection: {
-              connect: { id: +checkoutColectionId }
+              connect: { id: +checkoutColectionId },
             },
             promo: {
-              connect: { id: +promo.id }
-            }
-          }
+              connect: { id: +promo.id },
+            },
+          },
         })
         await prisma.checkoutCollection.update({
           where: {
-            id: +checkoutColectionId
+            id: +checkoutColectionId,
           },
           data: {
-            total_item_price: totalItemPrice
+            total_item_price: totalItemPrice,
           },
           include: {
             checkout: true,
-            CheckoutDiscount: true
-          }
+            CheckoutDiscount: true,
+          },
         })
       } else if (promo.PromoType.name === 'SPECIFIC_PRODUCT') {
         console.log('beda')
       }
       const checkCollection = await prisma.checkoutCollection.findUnique({
         where: {
-          id: +checkoutColectionId
-        }
+          id: +checkoutColectionId,
+        },
       })
       return { cheockoutColection: checkCollection }
     } catch (error) {
