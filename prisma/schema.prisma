@@ -182,6 +182,7 @@ model shippingCheckout {
   price       Int?
   checkout_id Int      @unique
   checkout    Checkout @relation(fields: [checkout_id], references: [id])
+
 }
 
 model CheckoutItem {

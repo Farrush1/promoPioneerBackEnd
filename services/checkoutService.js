@@ -32,7 +32,9 @@ class CheckoutService {
     }
   }
 
+
   static async getById(params) {
+
     const { checkoutColectionId, user } = params
     const { id } = user
     const userData = await prisma.user.findUnique({

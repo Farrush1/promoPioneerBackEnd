@@ -10,6 +10,7 @@ class UserService {
           Cart: true,
           affiliate_code: true,
           UserCity: true,
+
         },
       })
       return { users }
@@ -39,11 +40,13 @@ class UserService {
       const { id } = user
       const users = await prisma.user.findUnique({
         where: {
+
           id,
         },
         include: {
           affiliate_code: true,
         },
+
       })
       return { users }
     } catch (error) {

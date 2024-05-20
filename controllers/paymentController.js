@@ -29,6 +29,7 @@ class PaymentController {
     }
   }
 
+
   static async changeStatus(req, res, next) {
     try {
       const params = {

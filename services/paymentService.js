@@ -49,6 +49,7 @@ class PaymentService {
     }
   }
 
+
   static async getById(id) {
     try {
       const payment = await prisma.payment.findUnique({
@@ -103,6 +104,7 @@ class PaymentService {
         include: {
           checkout_colection: true,
         },
+
       })
       return { payment }
     } catch (error) {
