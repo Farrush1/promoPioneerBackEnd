@@ -9,5 +9,6 @@ router.get('/', PaymentController.getAll)
 router.get('/:id', PaymentController.getById)
 router.post('/', PaymentController.store)
 router.put('/proof/:id', upload.single('payment_proof'), PaymentController.uploadProof)
+router.put('/status/:id', PaymentController.changeStatus)
 
 module.exports = router

@@ -42,7 +42,7 @@ class AuthService {
           email,
           password: hashedPassword,
           is_register_using_code: withCode,
-          is_first_transaction: false,
+          is_first_transaction: true,
           affiliate_code: {
             create: {
               affiliate_code: userAffiliate,

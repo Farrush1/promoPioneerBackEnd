@@ -12,6 +12,44 @@ class PaymentService {
     }
   }
 
+  static async changeStatus(params) {
+    try {
+      const { paymentId, body } = params
+      const { paymentStatus } = body
+      const payment = await prisma.payment.update({
+        where: {
+          id: +paymentId,
+        },
+        data: {
+          payment_status: paymentStatus,
+        },
+        include:{
+          checkout_colection:{
+            include:{
+              user: true
+            }
+          }
+        }
+      })
+      let user = payment.checkout_colection.user
+      if (user.is_register_using_code && user.is_first_transaction && paymentStatus === 'SUCCESS') {
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            is_first_transaction: false
+          },
+        })
+      }
+      return { payment }
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
+
   static async getById(id) {
     try {
       const payment = await prisma.payment.findUnique({
@@ -63,6 +101,10 @@ class PaymentService {
           checkout_collection_id: checkoutColectionId,
           payment_status: 'PENDING',
         },
+        include: {
+          checkout_colection: true,
+        },
+
       })
       return { payment }
     } catch (error) {
@@ -89,7 +131,7 @@ class PaymentService {
           payment_status: 'WAITING',
         },
       })
-      return { payment, paymentProof }
+      return { payment }
     } catch (error) {
       console.log(error)
       throw error

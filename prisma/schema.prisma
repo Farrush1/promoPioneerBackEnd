@@ -78,7 +78,7 @@ model User {
   password               String
   role                   Role                 @default(USER)
   UserCity               City?                @relation(fields: [city_id], references: [id])
-  phone_number           String
+  phone_number           String?
   city_id                Int?
   full_address           String?
   age                    Int?
@@ -166,25 +166,23 @@ model Checkout {
   checkout_collection_id Int
   total_checkout_price   Int?
   subtotal_price         Int?
-  shipping_name          String?
-  shipping_service       String?
-  shipping_price         Int?
   status                 String
   total_weight           Int?
   city_id                Int
   city                   City               @relation(fields: [city_id], references: [id])
   checkout_collection    CheckoutCollection @relation(fields: [checkout_collection_id], references: [id])
   checkout_item          CheckoutItem[]
-  shippingCheckout shippingCheckout?
+  shippingCheckout       shippingCheckout?
 }
 
-model shippingCheckout{
-  id                     Int                @id @default(autoincrement())
-  name String
-  service String
-  price Int
-  checkout_id Int @unique
-  checkout Checkout @relation(fields: [checkout_id], references: [id])
+model shippingCheckout {
+  id          Int      @id @default(autoincrement())
+  name        String?
+  service     String?
+  price       Int?
+  checkout_id Int      @unique
+  checkout    Checkout @relation(fields: [checkout_id], references: [id])
+
 }
 
 model CheckoutItem {
