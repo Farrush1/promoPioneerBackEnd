@@ -3,14 +3,14 @@ const {
   createCheckoutCollection,
   createCheckouts,
   getCheckoutCollection,
-  updateCheckouts,
+  updateCheckouts
 } = require('../helpers/checkoutHelpers')
 const prisma = require('../libs/prisma')
 const getDataUserCookie = require('../utils/cookie')
 // const shippingCost = require('../utils/shippingCost')
 
 class CheckoutService {
-  static async getAll() {
+  static async getAll () {
     try {
       const checkout = await prisma.checkoutCollection.findMany({
         include: {
@@ -18,10 +18,10 @@ class CheckoutService {
           checkout: {
             include: {
               checkout_item: true,
-              shippingCheckout: true,
-            },
-          },
-        },
+              shippingCheckout: true
+            }
+          }
+        }
       })
       return { checkout }
     } catch (error) {
@@ -30,13 +30,13 @@ class CheckoutService {
     }
   }
 
-  static async getById(params) {
+  static async getById (params) {
     const { checkoutColectionId, user } = params
     const { id } = user
     const userData = await prisma.user.findUnique({
       where: {
-        id,
-      },
+        id
+      }
     })
     const userCity = userData.city_id
     if (!userCity) {
@@ -47,17 +47,17 @@ class CheckoutService {
     try {
       const checkoutColection = await prisma.checkoutCollection.findUnique({
         where: {
-          id: +checkoutColectionId,
+          id: +checkoutColectionId
         },
         include: {
           CheckoutDiscount: true,
           checkout: {
             include: {
               checkout_item: true,
-              shippingCheckout: true,
-            },
-          },
-        },
+              shippingCheckout: true
+            }
+          }
+        }
       })
 
       await updateCheckouts(checkoutColection, userCity)
@@ -80,8 +80,8 @@ class CheckoutService {
         data: {
           total_price: totalPrice,
           total_item_price: totalItemPrice,
-          total_shipping_price: totalShippingPrice,
-        },
+          total_shipping_price: totalShippingPrice
+        }
       })
       const secondCheckCollection = await getCheckoutCollection(checkoutColection.id)
 
@@ -92,19 +92,19 @@ class CheckoutService {
     }
   }
 
-  static async storeProduct(params) {
+  static async storeProduct (params) {
     try {
       const { body, cookie, productId } = params
       const { quantity } = body
       const { id } = getDataUserCookie(cookie)
       const user = await prisma.user.findUnique({
-        where: { id },
+        where: { id }
       })
       const product = await prisma.product.findUnique({
         where: { id: +productId },
         include: {
-          warehouse: true,
-        },
+          warehouse: true
+        }
       })
       if (!user.full_address || !user.city_id) {
         const error = new Error('user address and city required')
@@ -128,12 +128,12 @@ class CheckoutService {
                   product_id: +productId,
                   quantity,
                   total_specific_price: totalPrice,
-                  weight: totalWeight,
-                },
-              },
-            },
-          },
-        },
+                  weight: totalWeight
+                }
+              }
+            }
+          }
+        }
       })
       return { checkoutColection }
     } catch (error) {
@@ -142,7 +142,7 @@ class CheckoutService {
     }
   }
 
-  static async storeCart(params) {
+  static async storeCart (params) {
     try {
       const { cookie } = params
       const { id } = getDataUserCookie(cookie)
@@ -159,12 +159,12 @@ class CheckoutService {
             include: {
               product: {
                 include: {
-                  warehouse: true,
-                },
-              },
-            },
-          },
-        },
+                  warehouse: true
+                }
+              }
+            }
+          }
+        }
       })
 
       if (!cart) {
@@ -200,8 +200,8 @@ class CheckoutService {
             checkout_colection_id: checkColection.id,
             promo_id: 1,
             discount_percent: 50,
-            discount_price: discount,
-          },
+            discount_price: discount
+          }
         })
       }
 
@@ -209,8 +209,8 @@ class CheckoutService {
       await prisma.checkoutCollection.update({
         where: { id: checkColection.id },
         data: {
-          total_item_price: totalItemPrice,
-        },
+          total_item_price: totalItemPrice
+        }
       })
       const lasCheckColection = await getCheckoutCollection(checkColection.id)
 
@@ -221,18 +221,18 @@ class CheckoutService {
     }
   }
 
-  static async promoCheckout(params) {
+  static async promoCheckout (params) {
     try {
       const { body, checkoutColectionId } = params
       const { codeVoucher } = body
       const promo = await prisma.promo.findUnique({
         where: {
-          name: codeVoucher,
+          name: codeVoucher
         },
         include: {
           PromoType: true,
-          promoProduct: true,
-        },
+          promoProduct: true
+        }
       })
       if (!promo) {
         const error = new Error('voucher promo not found')
@@ -247,36 +247,36 @@ class CheckoutService {
           where: {
             checkout: {
               checkout_collection: {
-                id: +checkoutColectionId,
-              },
+                id: +checkoutColectionId
+              }
             },
             product: {
               PromoProduct: {
                 some: {
                   promo: {
-                    name: codeVoucher,
-                  },
-                },
-              },
-            },
+                    name: codeVoucher
+                  }
+                }
+              }
+            }
           },
           include: {
             product: {
               include: {
-                PromoProduct: true,
-              },
-            },
-          },
+                PromoProduct: true
+              }
+            }
+          }
         })
         for (const checkItem of chekoutItems) {
           const discount = (promo.discount_percent * checkItem.total_specific_price) / 100
           await prisma.checkoutItem.update({
             where: {
-              id: checkItem.id,
+              id: checkItem.id
             },
             data: {
-              total_specific_price: checkItem.total_specific_price - discount,
-            },
+              total_specific_price: checkItem.total_specific_price - discount
+            }
           })
           totalQuantity += checkItem.quantity
           totalDiscount = totalDiscount + discount
@@ -286,20 +286,20 @@ class CheckoutService {
           where: {
             checkout: {
               checkout_collection: {
-                id: +checkoutColectionId,
-              },
-            },
-          },
+                id: +checkoutColectionId
+              }
+            }
+          }
         })
         for (const checkItem of chekoutItems) {
           const discount = (promo.discount_percent * checkItem.total_specific_price) / 100
           await prisma.checkoutItem.update({
             where: {
-              id: checkItem.id,
+              id: checkItem.id
             },
             data: {
-              total_specific_price: checkItem.total_specific_price - discount,
-            },
+              total_specific_price: checkItem.total_specific_price - discount
+            }
           })
           totalQuantity += checkItem.quantity
           totalDiscount = totalDiscount + discount
@@ -311,12 +311,12 @@ class CheckoutService {
           discount_percent: promo.discount_percent,
           total_quantity: totalQuantity,
           checkout_collection: {
-            connect: { id: +checkoutColectionId },
+            connect: { id: +checkoutColectionId }
           },
           promo: {
-            connect: { id: +promo.id },
-          },
-        },
+            connect: { id: +promo.id }
+          }
+        }
       })
       return { message: 'success add discount' }
     } catch (error) {
