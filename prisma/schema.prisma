@@ -182,7 +182,6 @@ model shippingCheckout {
   price       Int?
   checkout_id Int      @unique
   checkout    Checkout @relation(fields: [checkout_id], references: [id])
-
 }
 
 model CheckoutItem {
@@ -191,6 +190,7 @@ model CheckoutItem {
   product_id           Int
   quantity             Int
   total_specific_price Int
+  original_price       Int
   weight               Int
   product              Product  @relation(fields: [product_id], references: [id])
   checkout             Checkout @relation(fields: [checkout_id], references: [id])
@@ -201,6 +201,7 @@ model CheckoutDiscount {
   checkout_colection_id Int
   promo_id              Int
   discount_percent      Int
+  total_quantity        Int
   discount_price        Int
   checkout_collection   CheckoutCollection @relation(fields: [checkout_colection_id], references: [id])
   promo                 Promo              @relation(fields: [promo_id], references: [id])

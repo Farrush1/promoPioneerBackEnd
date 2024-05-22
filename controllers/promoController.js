@@ -21,7 +21,6 @@ class PromoController {
     }
   }
 
-
   static async update (req, res, next) {
     try {
       const params = {
@@ -55,7 +54,6 @@ class PromoController {
       next(error)
     }
   }
-
 
   static async storeProductPromo (req, res, next) {
 

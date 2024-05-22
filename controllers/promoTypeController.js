@@ -1,7 +1,6 @@
 
 const PromoTypeService = require('../services/promoTypeService')
 
-
 class PromoTypeController {
   static getAll = async (req, res, next) => {
     try {
@@ -12,7 +11,6 @@ class PromoTypeController {
     }
   }
 
-
   static getPromoByPromotype = async (req, res, next) => {
     try {
       const promoType = await PromoTypeService.getPromoByPromotype(req.params.id)
@@ -21,7 +19,6 @@ class PromoTypeController {
       next(error)
     }
   }
-
 }
 
 module.exports = PromoTypeController

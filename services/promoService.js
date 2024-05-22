@@ -8,7 +8,6 @@ class PromoService {
           promoProduct: true,
           PromoType: true
         }
-
       })
       return { promo }
     } catch (error) {
@@ -35,7 +34,6 @@ class PromoService {
   }
 
   static async update (params) {
-
     try {
       const { id, body } = params
       const {
@@ -47,7 +45,6 @@ class PromoService {
         startDate,
         endDate,
         promoTypeId
-
       } = body
       if (!name || !discountPercent || !quantity || !startDate || !endDate || !promoTypeId) {
         const error = new Error('Missing required fields')
@@ -66,7 +63,6 @@ class PromoService {
           isLimitedTime,
           start_date: startDate,
           end_date: endDate,
-
           promo_type_id: promoTypeId
         }
       })
@@ -76,7 +72,6 @@ class PromoService {
       throw error
     }
   }
-
 
   static async destroy (id) {
     try {
@@ -91,7 +86,6 @@ class PromoService {
       throw error
     }
   }
-
 
   static async store (params) {
     const {
