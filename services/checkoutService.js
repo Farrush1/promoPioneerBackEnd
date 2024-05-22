@@ -66,11 +66,7 @@ class CheckoutService {
 
       await updateCheckouts(checkoutColection, userCity)
 
-      for (const checkout of checkoutColection.checkout) {
-        console.log(checkout)
-        const shipping = await shippingOption(checkout.city_id, userCity, checkout.total_weight)
-        checkout.shipping_option = shipping.shippOption
-      }
+      
       
       const getCheckCollection = await getCheckoutCollection(checkoutColection.id)
       
@@ -94,6 +90,7 @@ class CheckoutService {
         },
       })
       const secondCheckCollection = await getCheckoutCollection(checkoutColection.id)
+
       return { getCheckCollection: secondCheckCollection }
     } catch (error) {
       console.log(error)
