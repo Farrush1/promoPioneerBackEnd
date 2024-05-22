@@ -6,8 +6,9 @@ class PromoService {
       const promo = await prisma.promo.findMany({
         include: {
           promoProduct: true,
-          PromoType: true,
-        },
+          PromoType: true
+        }
+
       })
       return { promo }
     } catch (error) {
@@ -16,15 +17,15 @@ class PromoService {
     }
   }
 
-  static async getById(id) {
+  static async getById (id) {
     try {
       const promo = await prisma.promo.findUnique({
         where: {
-          id: +id,
+          id: +id
         },
         include: {
-          PromoType: true,
-        },
+          PromoType: true
+        }
       })
       return { promo }
     } catch (error) {
@@ -33,7 +34,8 @@ class PromoService {
     }
   }
 
-  static async update(params) {
+  static async update (params) {
+
     try {
       const { id, body } = params
       const {
@@ -44,7 +46,8 @@ class PromoService {
         isLimitedTime,
         startDate,
         endDate,
-        promoTypeId,
+        promoTypeId
+
       } = body
       if (!name || !discountPercent || !quantity || !startDate || !endDate || !promoTypeId) {
         const error = new Error('Missing required fields')
@@ -53,7 +56,7 @@ class PromoService {
       }
       const promo = await prisma.promo.update({
         where: {
-          id: +id,
+          id: +id
         },
         data: {
           name,
@@ -63,8 +66,9 @@ class PromoService {
           isLimitedTime,
           start_date: startDate,
           end_date: endDate,
-          promo_type_id: promoTypeId,
-        },
+
+          promo_type_id: promoTypeId
+        }
       })
       return { message: 'success', promo }
     } catch (error) {
@@ -73,12 +77,13 @@ class PromoService {
     }
   }
 
-  static async destroy(id) {
+
+  static async destroy (id) {
     try {
       await prisma.promo.delete({
         where: {
-          id: +id,
-        },
+          id: +id
+        }
       })
       return { message: 'success' }
     } catch (error) {
@@ -87,7 +92,8 @@ class PromoService {
     }
   }
 
-  static async store(params) {
+
+  static async store (params) {
     const {
       name,
       discountPercent,
@@ -96,7 +102,7 @@ class PromoService {
       isLimitedTime,
       startDate,
       endDate,
-      promoTypeId,
+      promoTypeId
     } = params
     try {
       const promo = await prisma.promo.create({

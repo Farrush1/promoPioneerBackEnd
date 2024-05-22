@@ -10,6 +10,25 @@ class PromoTypeService {
       throw error
     }
   }
+
+
+  static getPromoByPromotype = async (id) => {
+    try {
+      const promoType = await prisma.promoType.findUnique({
+        where: {
+          id: +id
+        },
+        include: {
+          promo: true
+        }
+      })
+      return { promoType }
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
 }
 
 module.exports = PromoTypeService

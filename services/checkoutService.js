@@ -4,8 +4,6 @@ const {
   createCheckouts,
   getCheckoutCollection,
   updateCheckouts,
-  shippingOption,
-  // firstShip,
 } = require('../helpers/checkoutHelpers')
 const prisma = require('../libs/prisma')
 const getDataUserCookie = require('../utils/cookie')
@@ -32,9 +30,7 @@ class CheckoutService {
     }
   }
 
-
   static async getById(params) {
-
     const { checkoutColectionId, user } = params
     const { id } = user
     const userData = await prisma.user.findUnique({
@@ -66,17 +62,16 @@ class CheckoutService {
 
       await updateCheckouts(checkoutColection, userCity)
 
-      
-      
+
       const getCheckCollection = await getCheckoutCollection(checkoutColection.id)
-      
+
       let totalItemPrice = 0
       let totalShippingPrice = 0
       getCheckCollection.checkout.forEach((element) => {
         totalItemPrice += element.subtotal_price
         totalShippingPrice += element.shippingCheckout.price
       })
-      getCheckCollection.CheckoutDiscount.forEach((element) =>{
+      getCheckCollection.CheckoutDiscount.forEach((element) => {
         totalItemPrice -= element.discount_price
       })
       const totalPrice = totalItemPrice + totalShippingPrice
@@ -187,8 +182,6 @@ class CheckoutService {
 
       const newCheckColection = await getCheckoutCollection(checkColection.id)
 
-      
-
       // new code
       await updateCheckouts(newCheckColection, user.city_id)
 
@@ -201,8 +194,8 @@ class CheckoutService {
       let discount = 0
 
       if (user.is_register_using_code && !user.is_first_transaction) {
-        console.log("first")
-        discount = 50 * totalItemPrice / 100
+        console.log('first')
+        discount = (50 * totalItemPrice) / 100
         await prisma.checkoutDiscount.create({
           data: {
             checkout_colection_id: checkColection.id,
@@ -247,6 +240,7 @@ class CheckoutService {
         },
         include: {
           PromoType: true,
+          promoProduct: true,
         },
       })
       if (!promo) {
@@ -254,45 +248,95 @@ class CheckoutService {
         error.name = 'ErrorNotFound'
         throw error
       }
-      let discountPrice = 0
-      let totalItemPrice = checkoutColection.total_item_price
-      // create discount checkout
-      if (promo.PromoType.name === 'ALL_PRODUCT') {
-        discountPrice = (totalItemPrice * promo.discount_percent) / 100
-        totalItemPrice = totalItemPrice - discountPrice
-        await prisma.checkoutDiscount.create({
-          data: {
-            discount_price: discountPrice,
-            discount_percent: promo.discount_percent,
-            checkout_collection: {
-              connect: { id: +checkoutColectionId },
-            },
-            promo: {
-              connect: { id: +promo.id },
-            },
-          },
-        })
-        await prisma.checkoutCollection.update({
-          where: {
-            id: +checkoutColectionId,
-          },
-          data: {
-            total_item_price: totalItemPrice,
-          },
-          include: {
-            checkout: true,
-            CheckoutDiscount: true,
-          },
-        })
-      } else if (promo.PromoType.name === 'SPECIFIC_PRODUCT') {
-        console.log('beda')
-      }
-      const checkCollection = await prisma.checkoutCollection.findUnique({
+
+      // if (promo.PromoType.name === 'SPECIFIC_PRODUCT') {
+      const chekoutItems = await prisma.checkoutItem.findMany({
         where: {
-          id: +checkoutColectionId,
+          checkout: {
+            checkout_collection: {
+              id: +checkoutColectionId,
+            },
+          },
+          product: {
+            PromoProduct: {
+              some: {
+                promo: {
+                  name: codeVoucher,
+                },
+              },
+            },
+          },
+        },
+        include: {
+          product: {
+            include: {
+              PromoProduct: true,
+            },
+          },
         },
       })
-      return { cheockoutColection: checkCollection }
+      let totalDiscount = 0
+      for (const checkItem of chekoutItems) {
+        const discount = promo.discount_percent * checkItem.total_specific_price / 100
+        await prisma.checkoutItem.update({
+          where: {
+            id: checkItem.id
+          },
+          data: {
+            total_specific_price: checkItem.total_specific_price - discount
+          }
+        })
+        totalDiscount = totalDiscount + checkItem.total_specific_price - discount
+      }
+      await prisma.checkoutDiscount.create({
+        data: {
+          discount_price: totalDiscount,
+          discount_percent: promo.discount_percent,
+          checkout_colection_id: +checkoutColectionId,
+        },
+      })
+      // }
+
+      // let discountPrice = 0
+
+      // let totalItemPrice = checkoutColection.total_item_price
+      // // create discount checkout
+      // if (promo.PromoType.name === 'ALL_PRODUCT') {
+      //   discountPrice = (totalItemPrice * promo.discount_percent) / 100
+      //   totalItemPrice = totalItemPrice - discountPrice
+      //   await prisma.checkoutDiscount.create({
+      //     data: {
+      //       discount_price: discountPrice,
+      //       discount_percent: promo.discount_percent,
+      //       checkout_collection: {
+      //         connect: { id: +checkoutColectionId },
+      //       },
+      //       promo: {
+      //         connect: { id: +promo.id },
+      //       },
+      //     },
+      //   })
+      //   await prisma.checkoutCollection.update({
+      //     where: {
+      //       id: +checkoutColectionId,
+      //     },
+      //     data: {
+      //       total_item_price: totalItemPrice,
+      //     },
+      //     include: {
+      //       checkout: true,
+      //       CheckoutDiscount: true,
+      //     },
+      //   })
+      // } else if (promo.PromoType.name === 'SPECIFIC_PRODUCT') {
+      //   console.log('beda')
+      // }
+      // const checkCollection = await prisma.checkoutCollection.findUnique({
+      //   where: {
+      //     id: +checkoutColectionId,
+      //   },
+      // })
+      return { cheockoutColection: checkoutColection, promo, chekoutItem }
     } catch (error) {
       if (error.code === 'P2002') {
         const error = new Error('promo already input')

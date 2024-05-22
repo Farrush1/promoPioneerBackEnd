@@ -9,12 +9,12 @@ const transport = nodemailer.createTransport({
   port: 2525,
   auth: {
     user: '2981300bb65bf5',
-    pass: 'dda4934c6992dd',
-  },
+    pass: 'dda4934c6992dd'
+  }
 })
 
 class AuthService {
-  static async register(params) {
+  static async register (params) {
     try {
       const { name, email, password, confirmPassword, affiliateCode } = params
       this.validateRegistrationParams(name, email, password, confirmPassword)
@@ -23,8 +23,8 @@ class AuthService {
       if (affiliateCode) {
         const checkAffiliate = await prisma.affiliateCode.findUnique({
           where: {
-            affiliate_code: affiliateCode,
-          },
+            affiliate_code: affiliateCode
+          }
         })
         if (!checkAffiliate) {
           const error = new Error('wrong affiliate code')
@@ -45,19 +45,19 @@ class AuthService {
           is_first_transaction: true,
           affiliate_code: {
             create: {
-              affiliate_code: userAffiliate,
-            },
-          },
+              affiliate_code: userAffiliate
+            }
+          }
         },
 
         include: {
-          affiliate_code: true,
-        },
+          affiliate_code: true
+        }
       })
       await prisma.cart.create({
         data: {
-          user_id: user.id,
-        },
+          user_id: user.id
+        }
       })
       return { user }
     } catch (error) {
@@ -66,13 +66,13 @@ class AuthService {
     }
   }
 
-  static async login(params, res) {
+  static async login (params, res) {
     try {
       const { email, password } = params
       this.validateLoginParams(email, password)
 
       const user = await prisma.user.findUnique({
-        where: { email },
+        where: { email }
       })
 
       this.validateUserCredentials(user)
@@ -88,7 +88,7 @@ class AuthService {
 
       res.cookie('accessToken', token, {
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000, // 1 day
+        maxAge: 24 * 60 * 60 * 1000 // 1 day
       })
 
       return { message: 'success login', role: user.role }
@@ -98,13 +98,13 @@ class AuthService {
     }
   }
 
-  static async forgotPassword(params) {
+  static async forgotPassword (params) {
     try {
       const { email } = params
       const user = await prisma.user.findFirst({
         where: {
-          email,
-        },
+          email
+        }
       })
       if (!user) {
         const error = new Error('Email not Found!')
@@ -193,7 +193,7 @@ class AuthService {
         from: 'thepioneerpromo@gmail.com',
         to: user.email,
         subject: 'Password Reset',
-        html,
+        html
       })
 
       return { message: 'Password reset email sent' }
@@ -203,7 +203,7 @@ class AuthService {
     }
   }
 
-  static async resetPassword(params) {
+  static async resetPassword (params) {
     try {
       const { token, newPassword } = params
       const { id } = verify(token)
@@ -220,8 +220,8 @@ class AuthService {
       const newUser = await prisma.user.update({
         where: { id: user.id },
         data: {
-          password: hashedPassword,
-        },
+          password: hashedPassword
+        }
       })
       return { message: 'Password has been reset', newUser }
     } catch (error) {
@@ -230,7 +230,7 @@ class AuthService {
     }
   }
 
-  static async logout(req, res) {
+  static async logout (req, res) {
     try {
       res.clearCookie('accessToken')
       return { message: 'success logout' }
@@ -240,7 +240,7 @@ class AuthService {
     }
   }
 
-  static validateRegistrationParams(name, email, password, confirmPassword) {
+  static validateRegistrationParams (name, email, password, confirmPassword) {
     if (!name || !email || !password || !confirmPassword) {
       const error = new Error('Field must be filled')
       error.name = 'BadRequest'
@@ -253,7 +253,7 @@ class AuthService {
     }
   }
 
-  static validateLoginParams(email, password) {
+  static validateLoginParams (email, password) {
     if (!email || !password) {
       const error = new Error('Field must be filled')
       error.name = 'BadRequest'
@@ -261,7 +261,7 @@ class AuthService {
     }
   }
 
-  static validateUserCredentials(user) {
+  static validateUserCredentials (user) {
     if (!user) {
       const error = new Error('Invalid credentials')
       error.name = 'InvalidCredential'

@@ -1,4 +1,4 @@
-const prisma = require("../../../libs/prisma")
+const prisma = require('../../../libs/prisma')
 
 const PROMO = [
   {
@@ -10,17 +10,17 @@ const PROMO = [
     isLimitedTime: false,
     start_date: '2024-06-01T00:00:00.000Z',
     end_date: '2024-06-01T00:00:00.000Z',
-    promo_type_id: 1,
-  },
+    promo_type_id: 1
+  }
 ]
 
 const seedPromo = async () => {
   await Promise.all(
     PROMO.map(async (promo) => {
       await prisma.promo.create({
-        data: promo,
+        data: promo
       })
-    }),
+    })
   )
 }
 

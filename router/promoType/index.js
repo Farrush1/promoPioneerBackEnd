@@ -4,4 +4,7 @@ const router = express.Router()
 
 router.get('/', PromoTypeController.getAll)
 
+router.get('/promo/:id', PromoTypeController.getPromoByPromotype)
+
+
 module.exports = router

@@ -41,7 +41,7 @@ class CartController {
     try {
       const params = {
         cookie: req.cookies,
-        itemId: req.params.id,
+        itemId: req.params.id
       }
       const carts = await CartService.destroy(params)
       res.status(200).json(carts)

@@ -1,10 +1,10 @@
 const shippingCost = require('../utils/shippingCost')
 
 class AnonimusController {
-  static async getAll(req, res, next) {
+  static async getAll (req, res, next) {
     try {
       const services = ['jne', 'tiki', 'pos']
-      let recom = {}
+      const recom = {}
       let shippingRecom = null
 
       for (const service of services) {
@@ -17,7 +17,7 @@ class AnonimusController {
           shippingRecom = {
             code: service,
             service: cost.service,
-            cost: cost.cost,
+            cost: cost.cost
           }
           break // Hentikan loop jika menemukan costs yang tidak kosong
         }
@@ -26,7 +26,7 @@ class AnonimusController {
       res.status(200).json({
         message: 'success',
         shippOption: recom,
-        shippingRecom: shippingRecom,
+        shippingRecom
       })
     } catch (error) {
       next(error)
