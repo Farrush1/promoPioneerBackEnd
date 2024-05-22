@@ -1,13 +1,14 @@
 const prisma = require('../libs/prisma')
 
 class PromoService {
-  static async getAll () {
+  static async getAll() {
     try {
       const promo = await prisma.promo.findMany({
         include: {
           promoProduct: true,
           PromoType: true
         }
+
       })
       return { promo }
     } catch (error) {
@@ -34,6 +35,7 @@ class PromoService {
   }
 
   static async update (params) {
+
     try {
       const { id, body } = params
       const {
@@ -45,6 +47,7 @@ class PromoService {
         startDate,
         endDate,
         promoTypeId
+
       } = body
       if (!name || !discountPercent || !quantity || !startDate || !endDate || !promoTypeId) {
         const error = new Error('Missing required fields')
@@ -63,6 +66,7 @@ class PromoService {
           isLimitedTime,
           start_date: startDate,
           end_date: endDate,
+
           promo_type_id: promoTypeId
         }
       })
@@ -72,6 +76,7 @@ class PromoService {
       throw error
     }
   }
+
 
   static async destroy (id) {
     try {
@@ -86,6 +91,7 @@ class PromoService {
       throw error
     }
   }
+
 
   static async store (params) {
     const {
@@ -108,11 +114,11 @@ class PromoService {
           isLimitedTime,
           start_date: startDate,
           end_date: endDate,
-          promo_type_id: promoTypeId
+          promo_type_id: promoTypeId,
         },
         include: {
-          PromoType: true
-        }
+          PromoType: true,
+        },
       })
       return { promo }
     } catch (error) {
@@ -121,14 +127,14 @@ class PromoService {
     }
   }
 
-  static async storeProductPromo (params) {
+  static async storeProductPromo(params) {
     try {
       const { body, productId } = params
       const { promoName } = body
       const product = await prisma.product.findUnique({
         where: {
-          id: +productId
-        }
+          id: +productId,
+        },
       })
       if (!product) {
         const error = new Error('Product not Found')
@@ -137,11 +143,11 @@ class PromoService {
       }
       const promo = await prisma.promo.findUnique({
         where: {
-          name: promoName
+          name: promoName,
         },
         include: {
-          PromoType: true
-        }
+          PromoType: true,
+        },
       })
       if (!promo) {
         const error = new Error('Promo not Found')
@@ -152,12 +158,12 @@ class PromoService {
       const promoProduct = await prisma.promoProduct.create({
         data: {
           product_id: +productId,
-          promo_id: promo.id
+          promo_id: promo.id,
         },
         include: {
           promo: true,
-          Product: true
-        }
+          Product: true,
+        },
       })
 
       return { promoProduct }

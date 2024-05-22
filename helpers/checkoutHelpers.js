@@ -61,7 +61,9 @@ async function getCheckoutCollection(checkCollectionId) {
           checkout_item: {
             include: {
               product: true,
+
             },
+
           },
           shippingCheckout: true,
         },

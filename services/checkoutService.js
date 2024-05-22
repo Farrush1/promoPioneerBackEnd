@@ -62,6 +62,7 @@ class CheckoutService {
 
       await updateCheckouts(checkoutColection, userCity)
 
+
       const getCheckCollection = await getCheckoutCollection(checkoutColection.id)
 
       let totalItemPrice = 0
