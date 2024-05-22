@@ -4,5 +4,4 @@ const router = express.Router()
 
 router.get('/', AnonimusController.getAll)
 
-
 module.exports = router

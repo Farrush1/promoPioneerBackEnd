@@ -1,5 +1,4 @@
 const prisma = require('../libs/prisma')
-const { connect } = require('../router/checkout')
 const shippingCost = require('../utils/shippingCost')
 
 function getUniqueCityIds(cartItems) {
@@ -16,7 +15,6 @@ async function createCheckoutCollection(userId) {
 
 async function createCheckouts(uniqueCityIds, cartItems, checkCollectionId) {
   for (const cityId of uniqueCityIds) {
-    // const ship = firstShip(cityId, userCityId, )
     const checkout = await prisma.checkout.create({
       data: {
         checkout_collection_id: checkCollectionId,
@@ -63,7 +61,7 @@ async function getCheckoutCollection(checkCollectionId) {
           checkout_item: {
             include: {
               product: true,
-            }
+            },
           },
           shippingCheckout: true,
         },
@@ -82,17 +80,15 @@ async function updateCheckouts(newCheckCollection, userCityId) {
       subTotalPrice += item.total_specific_price
     })
 
-    
     const ship = await firstShip(element.city_id, userCityId, totalWeight)
-    
-    
+
     const { code, service, cost } = ship.firstShiping
     const shipping = await prisma.shippingCheckout.upsert({
       where: { checkout_id: element.id },
       update: { name: code, service, price: cost },
       create: { name: code, service, price: cost, checkout_id: element.id },
     })
-    
+
     const totalCheckPrice = subTotalPrice + shipping.price
     await prisma.checkout.update({
       where: { id: element.id },
@@ -145,7 +141,7 @@ async function firstShip(origin, destination, weight) {
           service: cost.service,
           cost: cost.cost,
         }
-        break // Hentikan loop jika menemukan costs yang tidak kosong
+        break
       }
     }
 
