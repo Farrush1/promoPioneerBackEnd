@@ -44,6 +44,7 @@ async function createCheckoutItems(cartItems, checkoutId, cityId) {
           product_id,
           quantity,
           total_specific_price: totalSpecificPrice,
+          original_price: totalSpecificPrice,
           weight: checkoutItemWeight,
         },
       })
@@ -79,6 +80,7 @@ async function updateCheckouts(newCheckCollection, userCityId) {
       totalWeight += item.weight
       subTotalPrice += item.total_specific_price
     })
+    console.log(totalWeight, "------------------")
 
     const ship = await firstShip(element.city_id, userCityId, totalWeight)
 

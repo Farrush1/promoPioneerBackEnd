@@ -225,14 +225,6 @@ class CheckoutService {
     try {
       const { body, checkoutColectionId } = params
       const { codeVoucher } = body
-      const checkoutColection = await prisma.checkoutCollection.findUnique({
-        where: {
-          id: +checkoutColectionId,
-        },
-        include: {
-          checkout: true,
-        },
-      })
       const promo = await prisma.promo.findUnique({
         where: {
           name: codeVoucher,
@@ -248,94 +240,85 @@ class CheckoutService {
         throw error
       }
 
-      // if (promo.PromoType.name === 'SPECIFIC_PRODUCT') {
-      const chekoutItems = await prisma.checkoutItem.findMany({
-        where: {
-          checkout: {
-            checkout_collection: {
-              id: +checkoutColectionId,
+      let totalDiscount = 0
+      let totalQuantity = 0
+      if (promo.PromoType.name === 'SPECIFIC_PRODUCT') {
+        const chekoutItems = await prisma.checkoutItem.findMany({
+          where: {
+            checkout: {
+              checkout_collection: {
+                id: +checkoutColectionId,
+              },
             },
-          },
-          product: {
-            PromoProduct: {
-              some: {
-                promo: {
-                  name: codeVoucher,
+            product: {
+              PromoProduct: {
+                some: {
+                  promo: {
+                    name: codeVoucher,
+                  },
                 },
               },
             },
           },
-        },
-        include: {
-          product: {
-            include: {
-              PromoProduct: true,
+          include: {
+            product: {
+              include: {
+                PromoProduct: true,
+              },
             },
           },
-        },
-      })
-      let totalDiscount = 0
-      for (const checkItem of chekoutItems) {
-        const discount = promo.discount_percent * checkItem.total_specific_price / 100
-        await prisma.checkoutItem.update({
-          where: {
-            id: checkItem.id
-          },
-          data: {
-            total_specific_price: checkItem.total_specific_price - discount
-          }
         })
-        totalDiscount = totalDiscount + checkItem.total_specific_price - discount
+        for (const checkItem of chekoutItems) {
+          const discount = (promo.discount_percent * checkItem.total_specific_price) / 100
+          await prisma.checkoutItem.update({
+            where: {
+              id: checkItem.id,
+            },
+            data: {
+              total_specific_price: checkItem.total_specific_price - discount,
+            },
+          })
+          totalQuantity += checkItem.quantity
+          totalDiscount = totalDiscount + discount
+        }
+      } else if (promo.PromoType.name === 'ALL_PRODUCT') {
+        const chekoutItems = await prisma.checkoutItem.findMany({
+          where: {
+            checkout: {
+              checkout_collection: {
+                id: +checkoutColectionId,
+              },
+            },
+          },
+        })
+        for (const checkItem of chekoutItems) {
+          const discount = (promo.discount_percent * checkItem.total_specific_price) / 100
+          await prisma.checkoutItem.update({
+            where: {
+              id: checkItem.id,
+            },
+            data: {
+              total_specific_price: checkItem.total_specific_price - discount,
+            },
+          })
+          totalQuantity += checkItem.quantity
+          totalDiscount = totalDiscount + discount
+        }
       }
       await prisma.checkoutDiscount.create({
         data: {
           discount_price: totalDiscount,
           discount_percent: promo.discount_percent,
-          checkout_colection_id: +checkoutColectionId,
+          total_quantity: totalQuantity,
+          checkout_collection: {
+            connect: { id: +checkoutColectionId },
+          },
+          promo: {
+            connect: { id: +promo.id },
+          },
         },
       })
-      // }
-
-      // let discountPrice = 0
-
-      // let totalItemPrice = checkoutColection.total_item_price
-      // // create discount checkout
-      // if (promo.PromoType.name === 'ALL_PRODUCT') {
-      //   discountPrice = (totalItemPrice * promo.discount_percent) / 100
-      //   totalItemPrice = totalItemPrice - discountPrice
-      //   await prisma.checkoutDiscount.create({
-      //     data: {
-      //       discount_price: discountPrice,
-      //       discount_percent: promo.discount_percent,
-      //       checkout_collection: {
-      //         connect: { id: +checkoutColectionId },
-      //       },
-      //       promo: {
-      //         connect: { id: +promo.id },
-      //       },
-      //     },
-      //   })
-      //   await prisma.checkoutCollection.update({
-      //     where: {
-      //       id: +checkoutColectionId,
-      //     },
-      //     data: {
-      //       total_item_price: totalItemPrice,
-      //     },
-      //     include: {
-      //       checkout: true,
-      //       CheckoutDiscount: true,
-      //     },
-      //   })
-      // } else if (promo.PromoType.name === 'SPECIFIC_PRODUCT') {
-      //   console.log('beda')
-      // }
-      // const checkCollection = await prisma.checkoutCollection.findUnique({
-      //   where: {
-      //     id: +checkoutColectionId,
-      //   },
-      // })
-      return { cheockoutColection: checkoutColection, promo, chekoutItem }
+      return { message: 'success add discount' }
     } catch (error) {
       if (error.code === 'P2002') {
         const error = new Error('promo already input')
