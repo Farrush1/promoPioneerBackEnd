@@ -1,12 +1,13 @@
 const prisma = require('../libs/prisma')
 
 class PromoService {
-  static async getAll () {
+  static async getAll() {
     try {
       const promo = await prisma.promo.findMany({
         include: {
-          promoProduct: true
-        }
+          promoProduct: true,
+          PromoType: true,
+        },
       })
       return { promo }
     } catch (error) {
@@ -15,22 +16,103 @@ class PromoService {
     }
   }
 
-  static async store (params) {
-    const { name, discountPercent, quantity, isLimited, startDate, endDate, promoTypeId } = params
+  static async getById(id) {
+    try {
+      const promo = await prisma.promo.findUnique({
+        where: {
+          id: +id,
+        },
+        include: {
+          PromoType: true,
+        },
+      })
+      return { promo }
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
+  static async update(params) {
+    try {
+      const { id, body } = params
+      const {
+        name,
+        discountPercent,
+        quantity,
+        isLimitedQuantity,
+        isLimitedTime,
+        startDate,
+        endDate,
+        promoTypeId,
+      } = body
+      if (!name || !discountPercent || !quantity || !startDate || !endDate || !promoTypeId) {
+        const error = new Error('Missing required fields')
+        error.name = 'BadRequest'
+        throw error
+      }
+      const promo = await prisma.promo.update({
+        where: {
+          id: +id,
+        },
+        data: {
+          name,
+          discount_percent: discountPercent,
+          quantity,
+          isLimitedQuantity,
+          isLimitedTime,
+          start_date: startDate,
+          end_date: endDate,
+          promo_type_id: promoTypeId,
+        },
+      })
+      return { message: 'success', promo }
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
+  static async destroy(id) {
+    try {
+      await prisma.promo.delete({
+        where: {
+          id: +id,
+        },
+      })
+      return { message: 'success' }
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
+  static async store(params) {
+    const {
+      name,
+      discountPercent,
+      quantity,
+      isLimitedQuantity,
+      isLimitedTime,
+      startDate,
+      endDate,
+      promoTypeId,
+    } = params
     try {
       const promo = await prisma.promo.create({
         data: {
           name,
           discount_percent: discountPercent,
           quantity,
-          isLimited,
+          isLimitedQuantity,
+          isLimitedTime,
           start_date: startDate,
           end_date: endDate,
-          promo_type_id: promoTypeId
+          promo_type_id: promoTypeId,
         },
         include: {
-          PromoType: true
-        }
+          PromoType: true,
+        },
       })
       return { promo }
     } catch (error) {
@@ -39,14 +121,14 @@ class PromoService {
     }
   }
 
-  static async storeProductPromo (params) {
+  static async storeProductPromo(params) {
     try {
       const { body, productId } = params
       const { promoName } = body
       const product = await prisma.product.findUnique({
         where: {
-          id: +productId
-        }
+          id: +productId,
+        },
       })
       if (!product) {
         const error = new Error('Product not Found')
@@ -55,11 +137,11 @@ class PromoService {
       }
       const promo = await prisma.promo.findUnique({
         where: {
-          name: promoName
+          name: promoName,
         },
         include: {
-          PromoType: true
-        }
+          PromoType: true,
+        },
       })
       if (!promo) {
         const error = new Error('Promo not Found')
@@ -70,12 +152,12 @@ class PromoService {
       const promoProduct = await prisma.promoProduct.create({
         data: {
           product_id: +productId,
-          promo_id: promo.id
+          promo_id: promo.id,
         },
         include: {
           promo: true,
-          Product: true
-        }
+          Product: true,
+        },
       })
 
       return { promoProduct }
