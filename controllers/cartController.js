@@ -1,7 +1,7 @@
 const CartService = require('../services/cartService')
 
 class CartController {
-  static async getAll (req, res, next) {
+  static async getAll(req, res, next) {
     try {
       const carts = await CartService.getAll(req.cookies)
       res.status(200).json(carts)
@@ -10,11 +10,11 @@ class CartController {
     }
   }
 
-  static async store (req, res, next) {
+  static async store(req, res, next) {
     try {
       const params = {
         cookie: req.cookies,
-        body: req.body
+        body: req.body,
       }
       const carts = await CartService.store(params)
       res.status(200).json(carts)
@@ -23,11 +23,11 @@ class CartController {
     }
   }
 
-  static async destroy (req, res, next) {
+  static async update(req, res, next) {
     try {
       const params = {
         cookie: req.cookies,
-        itemId: req.params.id,
+        itemId: req.params.id
       }
       const carts = await CartService.destroy(params)
       res.status(200).json(carts)

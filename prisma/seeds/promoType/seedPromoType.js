@@ -2,11 +2,11 @@ const prisma = require('../../../libs/prisma')
 
 const PROMO_TYPE = [
   {
-    // id: 1,
+    id: 1,
     name: 'ALL_PRODUCT'
   },
   {
-    // id: 2,
+    id: 2,
     name: 'SPECIFIC_PRODUCT'
   }
 ]

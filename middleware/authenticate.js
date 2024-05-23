@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 
 class AuthMiddleware {
-  static async authenticate(req, res, next) {
+  static async authenticate (req, res, next) {
     try {
       const token = req.cookies.accessToken
 
@@ -13,7 +13,7 @@ class AuthMiddleware {
         if (err) {
           return res.status(403).json({ error: 'Unauthorized: Token is not valid' })
         }
-        req.user = decoded 
+        req.user = decoded
         console.log(decoded)// Mengirimkan data pengguna yang terdekripsi ke request untuk digunakan di endpoint berikutnya
         next()
       })
@@ -22,7 +22,7 @@ class AuthMiddleware {
     }
   }
 
-  static async authorization(req, res, next) {
+  static async authorization (req, res, next) {
     try {
       const { role } = req.user
 

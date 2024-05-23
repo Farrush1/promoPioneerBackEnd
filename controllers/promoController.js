@@ -11,7 +11,7 @@ class PromoController {
     }
   }
 
-  static async getById(req, res, next) {
+  static async getById (req, res, next) {
     try {
       const promo = await PromoService.getById(req.params.id)
       return res.status(200).json(promo)
@@ -20,11 +20,11 @@ class PromoController {
     }
   }
 
-  static async update(req, res, next) {
+  static async update (req, res, next) {
     try {
       const params = {
         id: req.params.id,
-        body: req.body,
+        body: req.body
       }
       const promo = await PromoService.update(params)
       return res.status(200).json(promo)
@@ -33,7 +33,8 @@ class PromoController {
     }
   }
 
-  static async store(req, res, next) {
+  static async store (req, res, next) {
+
     try {
       const promo = await PromoService.store(req.body)
       return res.status(200).json(promo)
@@ -42,7 +43,8 @@ class PromoController {
     }
   }
 
-  static async destroy(req, res, next) {
+
+  static async destroy (req, res, next) {
     try {
       const promo = await PromoService.destroy(req.params.id)
       return res.status(200).json(promo)
@@ -51,7 +53,8 @@ class PromoController {
     }
   }
 
-  static async storeProductPromo(req, res, next) {
+  static async storeProductPromo (req, res, next) {
+
     try {
       const params = {
         body: req.body,

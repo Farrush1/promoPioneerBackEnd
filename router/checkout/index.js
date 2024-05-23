@@ -4,7 +4,7 @@ const AuthMiddleware = require('../../middleware/authenticate')
 const router = express.Router()
 
 router.get('/', CheckoutController.getAll)
-router.get('/:id',AuthMiddleware.authenticate, CheckoutController.getById)
+router.get('/:id', AuthMiddleware.authenticate, CheckoutController.getById)
 router.post('/products/:id', CheckoutController.storeProduct)
 router.post('/carts', CheckoutController.storeCart)
 router.post('/promo/:id', CheckoutController.promoCheckout)
