@@ -192,14 +192,14 @@ class CheckoutService {
 
       let discount = 0
 
-      if (user.is_register_using_code && !user.is_first_transaction) {
-        console.log('first')
+      if (user.is_register_using_code && user.is_first_transaction) {
         discount = (50 * totalItemPrice) / 100
         await prisma.checkoutDiscount.create({
           data: {
             checkout_colection_id: checkColection.id,
             promo_id: 1,
             discount_percent: 50,
+            total_quantity: 1,
             discount_price: discount
           }
         })
