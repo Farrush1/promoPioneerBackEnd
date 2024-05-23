@@ -1,4 +1,3 @@
-
 const PromoTypeService = require('../services/promoTypeService')
 
 class PromoTypeController {

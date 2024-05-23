@@ -11,7 +11,6 @@ class PromoController {
     }
   }
 
-
   static async getById (req, res, next) {
     try {
       const promo = await PromoService.getById(req.params.id)
@@ -46,7 +45,6 @@ class PromoController {
 
 
   static async destroy (req, res, next) {
-
     try {
       const promo = await PromoService.destroy(req.params.id)
       return res.status(200).json(promo)
