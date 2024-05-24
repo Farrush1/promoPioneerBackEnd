@@ -85,8 +85,14 @@ class UserService {
   static async updateBio(params) {
     try {
       const { cookie, body, file } = params
-      const { userCityId, fullAddress, age, gender, phoneNumber } = body
-      if (!userCityId || !fullAddress || !age || !gender || !phoneNumber) {
+      const { name, userCityId, fullAddress, age, gender, phoneNumber } = body
+      console.log(name)
+      console.log(userCityId)
+      console.log(age)
+      console.log(gender)
+      console.log(fullAddress)
+      console.log(phoneNumber)
+      if (!userCityId || !fullAddress || !age || !gender || !phoneNumber || !name) {
         const error = new Error('field requied')
         error.name = 'BadRequest'
         throw error
@@ -113,6 +119,7 @@ class UserService {
           id,
         },
         data: {
+          name,
           city_id: +userCityId,
           full_address: fullAddress,
           age: +age,
