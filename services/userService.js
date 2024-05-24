@@ -31,14 +31,18 @@ class UserService {
           CheckoutDiscount: true,
           checkout: {
             include: {
-              checkout_item: true,
+              city: true,
+              checkout_item: {
+                include: {
+                  product: true,
+                }
+              },
               shippingCheckout: true,
             },
           },
         },
       })
       return { checkoutCollection }
-      // return { message: "heek" }
     } catch (error) {
       console.log(error)
       throw error

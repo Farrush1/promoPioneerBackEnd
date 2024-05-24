@@ -91,7 +91,7 @@ class AuthService {
         maxAge: 24 * 60 * 60 * 1000 // 1 day
       })
 
-      return { message: 'success login', role: user.role }
+      return { message: 'success login', role: user.role, accessToken: token }
     } catch (error) {
       console.log(error)
       throw error
