@@ -5,6 +5,7 @@ Member:
 3. Muhammad Farras Amali
 4. Weli Erlina
 5. Fahdi Alan Fawwazi
+6. Mohammad Hanif F
 
 Langkah Setup :
 - Install package `npm i` atau `yarn`
