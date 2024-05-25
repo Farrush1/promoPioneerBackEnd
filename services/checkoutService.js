@@ -146,6 +146,7 @@ class CheckoutService {
             },
           },
         },
+
       })
       let discount = 0
 
@@ -191,6 +192,7 @@ class CheckoutService {
           },
         },
       })
+
       return { checkoutColection: chekColectionId }
     } catch (error) {
       console.log(error)
