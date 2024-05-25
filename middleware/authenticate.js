@@ -4,7 +4,8 @@ const prisma = require('../libs/prisma')
 class AuthMiddleware {
   static async authenticate (req, res, next) {
     try {
-      const token = req.cookies.accessToken
+      const authHeader = req.headers['authorization']
+      const token = req.cookies.accessToken || authHeader?.split(' ')[1]
 
       if (!token) {
         return res.status(401).json({ error: 'Unauthorized: Token not provided' })

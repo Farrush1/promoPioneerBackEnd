@@ -71,9 +71,9 @@ class CheckoutService {
         totalItemPrice += element.subtotal_price
         totalShippingPrice += element.shippingCheckout.price
       })
-      getCheckCollection.CheckoutDiscount.forEach((element) => {
-        totalItemPrice -= element.discount_price
-      })
+      // getCheckCollection.CheckoutDiscount.forEach((element) => {
+      //   totalItemPrice -= element.discount_price
+      // })
       const totalPrice = totalItemPrice + totalShippingPrice
 
       await prisma.checkoutCollection.update({
@@ -254,22 +254,57 @@ class CheckoutService {
         totalItemPrice += element.subtotal_price
       })
 
-      let discount = 0
+      // let discount = 0
 
       if (user.is_register_using_code && user.is_first_transaction) {
-        discount = (50 * totalItemPrice) / 100
+        // discount = (50 * totalItemPrice) / 100
+        // await prisma.checkoutDiscount.create({
+        //   data: {
+        //     checkout_colection_id: checkColection.id,
+        //     promo_id: 1,
+        //     discount_percent: 50,
+        //     total_quantity: 1,
+        //     discount_price: discount,
+        //   },
+        // })
+        let totalDiscountPrice = 0
+        const chekoutItems = await prisma.checkoutItem.findMany({
+          where: {
+            checkout: {
+              checkout_collection: {
+                id: checkColection.id,
+              },
+            },
+          },
+        })
+        for (const checkItem of chekoutItems) {
+          const discount = (50 * checkItem.total_specific_price) / 100
+          await prisma.checkoutItem.update({
+            where: {
+              id: checkItem.id,
+            },
+            data: {
+              total_specific_price: checkItem.total_specific_price - discount,
+            },
+          })
+          totalDiscountPrice = totalDiscountPrice + discount
+        }
         await prisma.checkoutDiscount.create({
           data: {
-            checkout_colection_id: checkColection.id,
-            promo_id: 1,
+            discount_price: totalDiscountPrice,
             discount_percent: 50,
             total_quantity: 1,
-            discount_price: discount,
+            checkout_collection: {
+              connect: { id: checkColection.id },
+            },
+            promo: {
+              connect: { id: 1 },
+            },
           },
         })
       }
 
-      totalItemPrice -= discount
+      // totalItemPrice -= discount
       await prisma.checkoutCollection.update({
         where: { id: checkColection.id },
         data: {
