@@ -55,9 +55,9 @@ class CheckoutService {
           checkout: {
             include: {
               checkout_item: {
-                include:{
-                  product: true
-                }
+                include: {
+                  product: true,
+                },
               },
               shippingCheckout: true,
             },
@@ -282,7 +282,7 @@ class CheckoutService {
         data: {
           total_item_price: totalItemPrice,
           total_shipping_price: totalShipPrice,
-          total_price: totalItemPrice + totalShipPrice
+          total_price: totalItemPrice + totalShipPrice,
         },
       })
       const lasCheckColection = await getCheckoutCollection(checkColection.id)
@@ -378,6 +378,28 @@ class CheckoutService {
           totalDiscount = totalDiscount + discount
         }
       }
+      const checkColection = await getCheckoutCollection(+checkoutColectionId)
+
+      let totalItemPrice = 0
+      for (const checkout of checkColection.checkout) {
+        let subTotalPrice = 0
+
+        checkout.checkout_item.forEach((item) => {
+          subTotalPrice += item.total_specific_price
+        })
+
+        const totalCheckPrice = subTotalPrice + checkout.shippingCheckout.price
+
+        await prisma.checkout.update({
+          where: { id: checkout.id },
+          data: {
+            total_checkout_price: totalCheckPrice,
+            subtotal_price: subTotalPrice,
+          },
+        })
+        totalItemPrice += subTotalPrice
+      } 
+
       await prisma.checkoutDiscount.create({
         data: {
           discount_price: totalDiscount,
@@ -389,6 +411,14 @@ class CheckoutService {
           promo: {
             connect: { id: +promo.id },
           },
+        },
+      })
+
+      await prisma.checkoutCollection.update({
+        where: { id: checkColection.id },
+        data: {
+          total_item_price: totalItemPrice,
+          total_price: totalItemPrice + checkColection.total_shipping_price,
         },
       })
       return { message: 'success add discount' }
