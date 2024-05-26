@@ -166,7 +166,6 @@ class PaymentService {
         throw error
       }
       const paymentProof = await cloudinaryUpload(file.path)
-
       const payment = await prisma.payment.update({
         where: {
           id: +paymentId,
