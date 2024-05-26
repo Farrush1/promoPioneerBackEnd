@@ -10,5 +10,6 @@ router.get('/:id', PaymentController.getById)
 router.post('/', PaymentController.store)
 router.put('/proof/:id', upload.single('payment_proof'), PaymentController.uploadProof)
 router.put('/status/:id', PaymentController.changeStatus)
+router.put('/count-payment', PaymentController.countPayment)
 
 module.exports = router

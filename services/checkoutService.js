@@ -60,31 +60,7 @@ class CheckoutService {
           },
         },
       })
-
-      await updateCheckouts(checkoutColection, userCity)
-
-      const getCheckCollection = await getCheckoutCollection(checkoutColection.id)
-
-      let totalItemPrice = 0
-      let totalShippingPrice = 0
-      getCheckCollection.checkout.forEach((element) => {
-        totalItemPrice += element.subtotal_price
-        totalShippingPrice += element.shippingCheckout.price
-      })
-
-      const totalPrice = totalItemPrice + totalShippingPrice
-
-      await prisma.checkoutCollection.update({
-        where: { id: getCheckCollection.id },
-        data: {
-          total_price: totalPrice,
-          total_item_price: totalItemPrice,
-          total_shipping_price: totalShippingPrice,
-        },
-      })
-      const secondCheckCollection = await getCheckoutCollection(checkoutColection.id)
-
-      return { getCheckCollection: secondCheckCollection }
+      return { getCheckCollection: checkoutColection }
     } catch (error) {
       console.log(error)
       throw error
@@ -146,7 +122,6 @@ class CheckoutService {
             },
           },
         },
-
       })
       let discount = 0
 
@@ -162,7 +137,8 @@ class CheckoutService {
           },
         })
         const totalItemPrice = checkoutColection.total_item_price - discount
-        const totalPrice = checkoutColection.total_price + totalItemPrice + checkoutColection.total_shipping_price
+        const totalPrice =
+          checkoutColection.total_price + totalItemPrice + checkoutColection.total_shipping_price
         await prisma.checkoutCollection.update({
           where: {
             id: checkoutColection.id,
@@ -200,11 +176,8 @@ class CheckoutService {
     }
   }
 
-  static async storeCart(params) {
+  static async storeCart(id) {
     try {
-      const { cookie } = params
-      const { id } = getDataUserCookie(cookie)
-
       const user = await prisma.user.findUnique({ where: { id } })
       if (!user) {
         throw new Error('User not found')
@@ -248,8 +221,8 @@ class CheckoutService {
         totalItemPrice += element.subtotal_price
       })
 
+      let totalDiscountPrice = 0
       if (user.is_register_using_code && user.is_first_transaction) {
-        let totalDiscountPrice = 0
         const chekoutItems = await prisma.checkoutItem.findMany({
           where: {
             checkout: {
@@ -285,12 +258,27 @@ class CheckoutService {
           },
         })
       }
+      const ship = await prisma.shippingCheckout.findMany({
+        where: {
+          checkout: {
+            checkout_collection: {
+              id: checkColection.id,
+            },
+          },
+        },
+      })
+      let totalShipPrice = 0
+      ship.forEach((shipCheck) => {
+        totalShipPrice += shipCheck.price
+      })
 
-      // totalItemPrice -= discount
+      totalItemPrice -= totalDiscountPrice
       await prisma.checkoutCollection.update({
         where: { id: checkColection.id },
         data: {
           total_item_price: totalItemPrice,
+          total_shipping_price: totalShipPrice,
+          total_price: totalItemPrice + totalShipPrice
         },
       })
       const lasCheckColection = await getCheckoutCollection(checkColection.id)

@@ -16,6 +16,7 @@ class AuthMiddleware {
       const user = await prisma.user.findUnique({
         where: { id }
       })
+      
       console.log(user)
       if (!user) {
         const error = new Error('InvalidCredential')
