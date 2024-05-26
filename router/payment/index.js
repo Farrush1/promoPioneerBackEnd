@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.use(AuthMiddleware.authenticate)
 router.get('/', PaymentController.getAll)
-router.get('/count', PaymentController.countPayment)
+router.get('/stats', PaymentController.countPayment)
 router.get('/:id', PaymentController.getById)
 router.post('/', PaymentController.store)
 router.put('/proof/:id', upload.single('payment_proof'), PaymentController.uploadProof)
