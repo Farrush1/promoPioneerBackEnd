@@ -54,7 +54,11 @@ class CheckoutService {
           CheckoutDiscount: true,
           checkout: {
             include: {
-              checkout_item: true,
+              checkout_item: {
+                include:{
+                  product: true
+                }
+              },
               shippingCheckout: true,
             },
           },

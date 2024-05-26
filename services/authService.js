@@ -62,6 +62,11 @@ class AuthService {
       return { user }
     } catch (error) {
       console.log(error)
+      if (error.code === 'P2002') {
+        const err = new Error('Email is already in use. Please use a different email.')
+        err.name = 'BadRequest'
+        throw err
+      }
       throw error
     }
   }
