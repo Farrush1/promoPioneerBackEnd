@@ -16,18 +16,21 @@ class PaymentService {
     try {
       const payment = await prisma.payment.count()
       const failedPayment = await prisma.payment.count({
-        where: { 
-          payment_status: 'FAILED'
-        }
+        where: {
+          payment_status: 'FAILED',
+        },
       })
 
       const totalRevenue = await prisma.checkoutCollection.groupBy({
         by: ['status'],
+        where:{
+          status: 'SUCCESS',
+        },
         _sum: {
-          total_price: true
-        }
-      })      
-      return { payment, failedPayment, totalRevenue }
+          total_price: true,
+        },
+      })
+      return { total: payment, failedPayment, totalRevenue }
     } catch (error) {
       console.log(error)
       throw error
@@ -38,6 +41,7 @@ class PaymentService {
     try {
       const { paymentId, body } = params
       const { paymentStatus } = body
+      
       const payment = await prisma.payment.update({
         where: {
           id: +paymentId,
@@ -53,6 +57,14 @@ class PaymentService {
           },
         },
       })
+      await prisma.checkoutCollection.update({
+        where: {
+          id: payment.checkout_colection.id,
+        },
+        data: {
+          status: paymentStatus,
+        },
+      })
       const user = payment.checkout_colection.user
       if (user.is_register_using_code && user.is_first_transaction && paymentStatus === 'SUCCESS') {
         await prisma.user.update({
@@ -64,7 +76,12 @@ class PaymentService {
           },
         })
       }
-      return { payment }
+      const getPayment = await prisma.payment.findUnique({
+        where: {
+          id: +paymentId,
+        },
+      })
+      return { payment: getPayment }
     } catch (error) {
       console.log(error)
       throw error
@@ -120,9 +137,9 @@ class PaymentService {
       }
       await prisma.checkoutCollection.update({
         where: { id: checkoutColectionId },
-        data:{
+        data: {
           status: 'PENDING',
-        }
+        },
       })
       const payment = await prisma.payment.create({
         data: {
@@ -149,7 +166,7 @@ class PaymentService {
         throw error
       }
       const paymentProof = await cloudinaryUpload(file.path)
-      
+
       const payment = await prisma.payment.update({
         where: {
           id: +paymentId,
@@ -158,18 +175,24 @@ class PaymentService {
           payment_proof: paymentProof.url,
           payment_status: 'WAITING',
         },
+        include: {
+          checkout_colection: true,
+        },
       })
       await prisma.checkoutCollection.update({
         where: {
-          payment: {
-            id: +paymentId,
-          },
+          id: payment.checkout_colection.id,
         },
         data: {
           status: 'WAITING',
         },
       })
-      return { payment }
+      const getPayment = await prisma.payment.findUnique({
+        where: {
+          id: +paymentId,
+        },
+      })
+      return { payment: getPayment }
     } catch (error) {
       console.log(error)
       throw error

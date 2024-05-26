@@ -86,12 +86,6 @@ class UserService {
     try {
       const { cookie, body, file } = params
       const { name, userCityId, fullAddress, age, gender, phoneNumber } = body
-      console.log(name)
-      console.log(userCityId)
-      console.log(age)
-      console.log(gender)
-      console.log(fullAddress)
-      console.log(phoneNumber)
       if (!userCityId || !fullAddress || !age || !gender || !phoneNumber || !name) {
         const error = new Error('field requied')
         error.name = 'BadRequest'
@@ -109,7 +103,7 @@ class UserService {
         error.name = 'ErrorNotFound'
       }
       if (!file) {
-        const error = new Error('Insert photo product')
+        const error = new Error('Insert photo avatar')
         error.name = 'BadRequest'
         throw error
       }
