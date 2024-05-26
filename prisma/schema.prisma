@@ -23,6 +23,14 @@ enum Gender {
   FEMALE
 }
 
+enum STATUS {
+  UNCOMPLETED
+  PENDING
+  WAITING
+  SUCCESS
+  FAILED
+}
+
 model Category {
   id      Int       @id @default(autoincrement())
   name    String    @unique
@@ -153,6 +161,7 @@ model CheckoutCollection {
   total_shipping_price Int?
   total_price          Int?
   user_id              Int
+  status               STATUS
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
   user                 User               @relation(fields: [user_id], references: [id])
@@ -166,7 +175,6 @@ model Checkout {
   checkout_collection_id Int
   total_checkout_price   Int?
   subtotal_price         Int?
-  status                 String
   total_weight           Int?
   city_id                Int
   city                   City               @relation(fields: [city_id], references: [id])
@@ -213,6 +221,6 @@ model Payment {
   id                     Int                @id @default(autoincrement())
   checkout_collection_id Int                @unique
   payment_proof          String?
-  payment_status         String
+  payment_status         STATUS
   checkout_colection     CheckoutCollection @relation(fields: [checkout_collection_id], references: [id])
 }
