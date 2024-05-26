@@ -60,6 +60,7 @@ class PaymentService {
             include: {
               checkout: {
                 include: {
+                  shippingCheckout: true,
                   checkout_item: {
                     include: {
                       product: true
