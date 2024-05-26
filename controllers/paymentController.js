@@ -24,7 +24,7 @@ class PaymentController {
   static async countPayment(req, res, next) {
     try {
       const { id } = req.params
-      const payment = await PaymentService.getById(id)
+      const payment = await PaymentService.countPayment(id)
       res.status(200).json(payment)
     } catch (error) {
       next(error)
