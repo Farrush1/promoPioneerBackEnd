@@ -1,7 +1,7 @@
 const PaymentService = require('../services/paymentService')
 
 class PaymentController {
-  static async getAll(req, res, next) {
+  static async getAll (req, res, next) {
     try {
       const payment = await PaymentService.getAll()
       res.status(200).json(payment)
@@ -10,7 +10,7 @@ class PaymentController {
     }
   }
 
-  static async getById(req, res, next) {
+  static async getById (req, res, next) {
     try {
       const { id } = req.params
       const payment = await PaymentService.getById(id)
@@ -21,7 +21,7 @@ class PaymentController {
   }
 
   // fix this
-  static async countPayment(req, res, next) {
+  static async countPayment (req, res, next) {
     try {
       const { id } = req.params
       const payment = await PaymentService.countPayment(id)
@@ -31,7 +31,7 @@ class PaymentController {
     }
   }
 
-  static async store(req, res, next) {
+  static async store (req, res, next) {
     try {
       const payment = await PaymentService.store(req.body)
       res.status(200).json(payment)
@@ -40,11 +40,11 @@ class PaymentController {
     }
   }
 
-  static async changeStatus(req, res, next) {
+  static async changeStatus (req, res, next) {
     try {
       const params = {
         paymentId: req.params.id,
-        body: req.body,
+        body: req.body
       }
       const payment = await PaymentService.changeStatus(params)
       res.status(200).json(payment)
@@ -53,11 +53,11 @@ class PaymentController {
     }
   }
 
-  static async uploadProof(req, res, next) {
+  static async uploadProof (req, res, next) {
     try {
       const params = {
         paymentId: req.params.id,
-        file: req.file,
+        file: req.file
       }
       const payment = await PaymentService.uploadProof(params)
       res.status(200).json(payment)

@@ -43,7 +43,7 @@ class CheckoutController {
       // const params = {
       //   id: req.user.id,
       // }
-      console.log(req.user.id, "lalalalal")
+      console.log(req.user.id, 'lalalalal')
       const checkouts = await CheckoutService.storeCart(req.user.id)
       res.status(200).json(checkouts)
     } catch (error) {

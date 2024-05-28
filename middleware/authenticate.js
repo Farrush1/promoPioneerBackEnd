@@ -4,7 +4,7 @@ const prisma = require('../libs/prisma')
 class AuthMiddleware {
   static async authenticate (req, res, next) {
     try {
-      const authHeader = req.headers['authorization']
+      const authHeader = req.headers.authorization
       const token = req.cookies.accessToken || authHeader?.split(' ')[1]
 
       if (!token) {
@@ -16,7 +16,7 @@ class AuthMiddleware {
       const user = await prisma.user.findUnique({
         where: { id }
       })
-      
+
       console.log(user)
       if (!user) {
         const error = new Error('InvalidCredential')
@@ -25,7 +25,7 @@ class AuthMiddleware {
       }
       req.user = {
         id: user.id,
-        role: user.role,
+        role: user.role
       }
       next()
 

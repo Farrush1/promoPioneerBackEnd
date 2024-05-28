@@ -9,9 +9,10 @@ function getUniqueCityIds (cartItems) {
 
 async function createCheckoutCollection (userId) {
   return await prisma.checkoutCollection.create({
-    data: { user_id: userId,
+    data: {
+      user_id: userId,
       status: 'UNCOMPLETED'
-     }
+    }
   })
 }
 
