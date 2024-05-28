@@ -7,7 +7,7 @@ const router = express.Router()
 router.get('/', CheckoutController.getAll)
 router.get('/:id', AuthMiddleware.authenticate, CheckoutController.getById)
 router.post('/products/:id', CheckoutController.storeProduct)
-router.post('/carts',AuthMiddleware.authenticate, CheckoutController.storeCart)
+router.post('/carts', AuthMiddleware.authenticate, CheckoutController.storeCart)
 router.post('/promo/:id', CheckoutController.promoCheckout)
 // ignore this route
 router.post('/cost', CheckoutController.cost)
