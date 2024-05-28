@@ -24,6 +24,9 @@ class CheckoutService {
             },
           },
         },
+        orderBy:{
+          updatedAt: 'desc'
+        }
       })
       return { checkout }
     } catch (error) {
