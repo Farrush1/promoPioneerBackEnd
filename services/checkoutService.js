@@ -1,4 +1,3 @@
-const { check } = require('prisma')
 const {
   getUniqueCityIds,
   createCheckoutCollection,
@@ -24,6 +23,9 @@ class CheckoutService {
             },
           },
         },
+        orderBy:{
+          updatedAt: 'desc'
+        }
       })
       return { checkout }
     } catch (error) {
