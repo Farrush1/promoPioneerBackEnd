@@ -28,6 +28,7 @@ class UserService {
           user_id: id,
         },
         include: {
+          payment: true,
           CheckoutDiscount: true,
           checkout: {
             include: {
