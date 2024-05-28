@@ -1,3 +1,4 @@
+const { check } = require('prisma')
 const {
   getUniqueCityIds,
   createCheckoutCollection,
@@ -101,12 +102,12 @@ class CheckoutService {
           total_shipping_price: cost,
           total_item_price: totalPrice,
           total_price: totalPrice + cost,
+          status: 'UNCOMPLETED',
           checkout: {
             create: {
               subtotal_price: totalPrice,
               total_weight: totalWeight,
               city_id: product.warehouse.city_id,
-              status: 'incompleted',
               checkout_item: {
                 create: {
                   product_id: +productId,
@@ -141,15 +142,37 @@ class CheckoutService {
           },
         })
         const totalItemPrice = checkoutColection.total_item_price - discount
-        const totalPrice =
-          checkoutColection.total_price + totalItemPrice + checkoutColection.total_shipping_price
-        await prisma.checkoutCollection.update({
+        const checkoutColections = await prisma.checkoutCollection.update({
           where: {
             id: checkoutColection.id,
           },
           data: {
             total_item_price: totalItemPrice,
-            total_price: totalPrice,
+            total_price: totalItemPrice + checkoutColection.total_shipping_price,
+          },
+          include: {
+            checkout: true,
+          },
+        })
+        const checkout = await prisma.checkout.update({
+          where: {
+            id: checkoutColections.checkout[0].id,
+          },
+          data: {
+            subtotal_price: totalItemPrice,
+            total_checkout_price: totalItemPrice + checkoutColection.total_shipping_price,
+          },
+          include: {
+            checkout_item: true,
+          },
+        })
+
+        await prisma.checkoutItem.update({
+          where: {
+            id: checkout.checkout_item[0].id,
+          },
+          data: {
+            total_specific_price: totalItemPrice,
           },
         })
       }
@@ -236,6 +259,7 @@ class CheckoutService {
             },
           },
         })
+        // checkout item
         for (const checkItem of chekoutItems) {
           const discount = (50 * checkItem.total_specific_price) / 100
           await prisma.checkoutItem.update({
@@ -248,6 +272,33 @@ class CheckoutService {
           })
           totalDiscountPrice = totalDiscountPrice + discount
         }
+
+        const checkouts = await prisma.checkout.findMany({
+          where: {
+            checkout_collection_id: checkColection.id,
+          },
+          include: {
+            checkout_item: true,
+            shippingCheckout: true
+          },
+        })
+
+        for (const checks of checkouts) {
+          let subtotal_price = 0
+          for (const item of checks.checkout_item) {
+            subtotal_price += item.total_specific_price
+          }
+          await prisma.checkout.update({
+            where: {
+              id: checks.id,
+            },
+            data: {
+              subtotal_price,
+              total_checkout_price: subtotal_price + checks.shippingCheckout.price,
+            },
+          })
+        }
+
         await prisma.checkoutDiscount.create({
           data: {
             discount_price: totalDiscountPrice,
@@ -398,7 +449,7 @@ class CheckoutService {
           },
         })
         totalItemPrice += subTotalPrice
-      } 
+      }
 
       await prisma.checkoutDiscount.create({
         data: {

@@ -97,6 +97,7 @@ class PaymentService {
         include: {
           checkout_colection: {
             include: {
+              user: true,
               checkout: {
                 include: {
                   shippingCheckout: true,
