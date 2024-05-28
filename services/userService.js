@@ -42,6 +42,9 @@ class UserService {
             },
           },
         },
+        orderBy:{
+          updatedAt: 'desc'
+        }
       })
       return { checkoutCollection }
     } catch (error) {
