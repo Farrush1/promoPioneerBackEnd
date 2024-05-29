@@ -114,6 +114,7 @@ class PromoService {
           PromoType: true
         }
       })
+      
       return { promo }
     } catch (error) {
       console.log(error)
