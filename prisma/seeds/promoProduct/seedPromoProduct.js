@@ -9,47 +9,47 @@ const PROMOPRODUCT = [
   {
     id: 2,
     promo_id: 3,
-    product_id: 2
+    product_id: 3
   },
   {
     id: 3,
     promo_id: 3,
-    product_id: 3
+    product_id: 5
   },
   {
     id: 4,
     promo_id: 3,
-    product_id: 4
+    product_id: 7
   },
   {
     id: 5,
     promo_id: 3,
-    product_id: 5
+    product_id: 9
   },
   {
     id: 6,
     promo_id: 3,
-    product_id: 6
+    product_id: 11
   },
   {
     id: 7,
     promo_id: 3,
-    product_id: 7
+    product_id: 13
   },
   {
     id: 8,
     promo_id: 3,
-    product_id: 8
+    product_id: 15
   },
   {
     id: 9,
     promo_id: 3,
-    product_id: 9
+    product_id: 17
   },
   {
     id: 10,
     promo_id: 3,
-    product_id: 10
+    product_id: 19
   }
 ]
 
