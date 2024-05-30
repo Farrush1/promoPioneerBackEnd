@@ -141,8 +141,8 @@ class PromoService {
           id: promoId,
         },
         include: {
-          PromoType: true,
-        },
+          PromoType: true
+        }
       })
       if (!promo) {
         const error = new Error('Promo not Found')
