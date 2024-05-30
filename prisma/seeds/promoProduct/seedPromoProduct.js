@@ -61,6 +61,7 @@ const seedPromoProduct = async () => {
       })
     })
   )
+
 }
 
 module.exports = seedPromoProduct

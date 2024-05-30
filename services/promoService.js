@@ -125,7 +125,7 @@ class PromoService {
   static async storeProductPromo (params) {
     try {
       const { body, productId } = params
-      const { promoName } = body
+      const { promoId } = body
       const product = await prisma.product.findUnique({
         where: {
           id: +productId
@@ -138,7 +138,7 @@ class PromoService {
       }
       const promo = await prisma.promo.findUnique({
         where: {
-          name: promoName
+          id: promoId,
         },
         include: {
           PromoType: true
