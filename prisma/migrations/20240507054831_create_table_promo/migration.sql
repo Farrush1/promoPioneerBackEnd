@@ -13,3 +13,5 @@ CREATE TABLE "Promo" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Promo_name_key" ON "Promo"("name");
+
+ALTER SEQUENCE "Promo_id_seq" MINVALUE 1 START 4 RESTART 4;

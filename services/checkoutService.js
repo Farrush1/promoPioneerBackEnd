@@ -16,6 +16,7 @@ class CheckoutService {
     try {
       const checkout = await prisma.checkoutCollection.findMany({
         include: {
+          payment: true,
           CheckoutDiscount: true,
           checkout: {
             include: {
@@ -25,8 +26,9 @@ class CheckoutService {
           }
         },
         orderBy: {
-          updatedAt: 'desc'
-        }
+          updatedAt: 'desc',
+        },
+
       })
       return { checkout }
     } catch (error) {
@@ -210,7 +212,14 @@ class CheckoutService {
     try {
       const user = await prisma.user.findUnique({ where: { id } })
       if (!user) {
-        throw new Error('User not found')
+        const error = new Error('User not found')
+        error.name = 'ErrorNotFound'
+        throw error
+      }
+      if (!user.city_id) {
+        const error = new Error('Address User not Found, Please edit profile')
+        error.name = 'ErrorNotFound'
+        throw error
       }
 
       const cart = await prisma.cart.findUnique({
@@ -282,8 +291,8 @@ class CheckoutService {
           },
           include: {
             checkout_item: true,
-            shippingCheckout: true
-          }
+            shippingCheckout: true,
+          },
         })
 
         for (const checks of checkouts) {

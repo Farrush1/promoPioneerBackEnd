@@ -199,7 +199,7 @@ class ProductService {
         data: {
           name: warehouseName,
           location: warehouseFullAddress,
-          city_id: warehouseCityId
+          city_id: +warehouseCityId
         }
       })
       const getData = await prisma.product.findUnique({
