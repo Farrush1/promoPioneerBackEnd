@@ -6,6 +6,9 @@ class WarehouseService {
       const warehouse = await prisma.wareHouse.findMany({
         include: {
           city: true
+        },
+        orderBy:{
+          id: 'asc'
         }
       })
       return { warehouse }
